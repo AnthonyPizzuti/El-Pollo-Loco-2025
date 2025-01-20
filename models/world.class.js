@@ -7,6 +7,7 @@ class World {
   camera_x = 0;
   statusBar = new StatusBar();
   throwableObjects = [];
+  hit_Sound = new Audio("audio/hit.mp3");
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -25,6 +26,7 @@ class World {
     setInterval(() => {
       this.checkCollision();
       this.checkThrowObjects();
+      this.checkBottleEnemyCollision();
     }, 200);
   }
 
@@ -32,6 +34,7 @@ class World {
     if (this.keyboard.D) {
       let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
       this.throwableObjects.push(bottle);
+      bottle.playThrowSound();
     }
   }
 
@@ -43,6 +46,34 @@ class World {
       }
     });
   }
+
+  checkBottleEnemyCollision() {
+    this.throwableObjects.forEach((bottle, bottleIndex) => {
+      this.level.enemies.forEach((enemy, enemyIndex) => {
+        if (bottle.isColliding(enemy)) {
+          this.throwableObjects.splice(bottleIndex, 1);
+          if (enemy instanceof Chicken || enemy instanceof Littlechicken) {
+            enemy.isDead = true;
+            enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
+            setTimeout(() => {
+              this.level.enemies.splice(enemyIndex, 1);
+            }, 1000);
+          } else if (enemy instanceof Endboss) {
+            enemy.hits = (enemy.hits || 0) + 1;
+            if (enemy.hits >= 3) {
+              enemy.isDead = true;
+              enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
+              setTimeout(() => {
+                this.level.enemies.splice(enemyIndex, 1);
+              }, 1000);
+            }
+          }
+        }
+      });
+    });
+  }
+  
+  
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

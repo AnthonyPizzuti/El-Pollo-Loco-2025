@@ -1,12 +1,17 @@
 let canvas;
+let ctx;
 let world;
 let keyboard = new Keyboard();
+let gameStarted = false;
+
+function showStartScreen() {
+    new StartScreen("canvas", "img/9_intro_outro_screens/start/startscreen_2.png", "playButton");
+  }
 
 function init() {
+  initLevel();
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
-
-  console.log("My Character is", world.character);
 }
 
 document.addEventListener("keydown", (e) => {

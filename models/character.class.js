@@ -41,6 +41,10 @@ class Character extends MovableObject {
 
   world;
   walking_sound = new Audio("audio/running.mp3");
+  jumping_sound = new Audio("audio/jump.mp3");
+  throwing_sound = new Audio("audio/throw.mp3");
+  dead_sound = new Audio("audio/dead.mp3");
+  hurt_sound = new Audio("audio/hurt.mp3");
 
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
@@ -55,6 +59,7 @@ class Character extends MovableObject {
   animate() {
     setInterval(() => {
       this.walking_sound.pause();
+      this.jumping_sound.pause();
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.otherDirection = false;
@@ -69,6 +74,7 @@ class Character extends MovableObject {
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
         this.jump();
+        this.jumping_sound.play();
       }
 
       this.world.camera_x = -this.x + 100;
@@ -77,8 +83,10 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
+        this.dead_sound.play();
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
+        this.hurt_sound.play();
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       } else {
