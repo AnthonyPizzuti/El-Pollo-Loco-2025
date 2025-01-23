@@ -18,7 +18,7 @@ class ThrowableObject extends MovableObject {
     }, 25);
   }
   playThrowSound() {
-    this.throw_sound.volume = 0.5; // Lautstärke auf 50% setzen
+    this.throw_sound.volume = 0.5;
     this.throw_sound.play();
   }
 }

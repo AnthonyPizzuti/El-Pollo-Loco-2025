@@ -55,6 +55,10 @@ canvas {
   h1 {
     display: none;
   }
+
+  #playButton {
+    top: 30%;
+  }
 }
 
 @media only screen and (max-height: 480px) {

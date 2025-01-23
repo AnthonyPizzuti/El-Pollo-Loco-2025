@@ -42,6 +42,14 @@ function initLevel() {
         "img/5_background/layers/1_first_layer/1.png",
         719 * 2
       ),
+    ],
+    [
+        new Bottle(400), 
+        new Bottle(600), 
+        new Bottle(800)
+    ],
+    [
+        new Coin()
     ]
   );
 }

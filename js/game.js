@@ -4,9 +4,14 @@ let world;
 let keyboard = new Keyboard();
 let gameStarted = false;
 
+
 function showStartScreen() {
-    new StartScreen("canvas", "img/9_intro_outro_screens/start/startscreen_2.png", "playButton");
-  }
+  new StartScreen(
+    "canvas",
+    "img/9_intro_outro_screens/start/startscreen_2.png",
+    "playButton"
+  );
+}
 
 function init() {
   initLevel();

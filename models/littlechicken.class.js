@@ -37,6 +37,7 @@ class Littlechicken extends MovableObject {
         if (!this.deadSoundPlayed) {
           this.chicken_dead_sound.play();
           this.deadSoundPlayed = true;
+          this.chicken_sound.pause();
         }
       } else {
         this.playAnimation(this.IMAGES_WALKING);
