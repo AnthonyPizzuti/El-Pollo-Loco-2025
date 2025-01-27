@@ -26,7 +26,9 @@ class Chicken extends MovableObject {
     setInterval(() => {
       if (!this.isDead) {
         this.moveLeft();
-        this.chicken_sound.play();
+        if (!this.chicken_sound.playing) {
+          this.chicken_sound.play();
+        }
         this.chicken_sound.volume = 0.1;
       } else {
         this.chicken_sound.pause();

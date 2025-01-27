@@ -3,6 +3,7 @@ let ctx;
 let world;
 let keyboard = new Keyboard();
 let gameStarted = false;
+let winScreenDisplayed = false;
 
 function showStartScreen() {
   new StartScreen(
@@ -103,3 +104,16 @@ document.addEventListener("keyup", (e) => {
     keyboard.D = false;
   }
 });
+
+function showWinningScreen() {
+  const winningScreen = new WinningScreen(
+    "canvas",
+    "img/9_intro_outro_screens/win/win_2.png"
+  );
+  winningScreen.init();
+  const restartButton = document.getElementById("restart-button");
+  restartButton.classList.remove("hidden");
+  restartButton.addEventListener("click", () => {
+    location.reload();
+  });
+}

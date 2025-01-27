@@ -17,21 +17,26 @@ class Littlechicken extends MovableObject {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
-
     this.x = 1800 + Math.random() * 500;
     this.speed = 0.2 + Math.random() * 0.3;
     this.animate();
   }
 
   animate() {
-    this.chicken_sound.pause();
     setInterval(() => {
-      this.moveLeft();
-      this.chicken_sound.play();
-      this.chicken_sound.volume = 0.1;
+      if (!this.isDead) {
+        this.moveLeft();
+        if (!this.chicken_sound.playing) {
+          this.chicken_sound.play();
+        }
+        this.chicken_sound.volume = 0.1;
+      } else {
+        this.chicken_sound.pause();
+      }
     }, 1000 / 60);
 
-    setInterval(() => {
+
+setInterval(() => {
       if (this.isDead) {
         this.playAnimation(this.IMAGES_DEAD);
         if (!this.deadSoundPlayed) {
@@ -43,5 +48,6 @@ class Littlechicken extends MovableObject {
         this.playAnimation(this.IMAGES_WALKING);
       }
     }, 50);
+
   }
 }

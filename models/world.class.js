@@ -12,6 +12,9 @@ class World {
   hit_Sound = new Audio("audio/hit.mp3");
   bottle_sound = new Audio("audio/glass.mp3");
   coin_sound = new Audio("audio/coin.mp3");
+  endboss_sound = new Audio("audio/endboss.mp3");
+  endbossSpawned = false;
+  winScreenDisplayed = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -38,7 +41,29 @@ class World {
       this.checkCollisionCoin();
       this.checkCollisionBottle();
       this.checkBottleEnemyCollision();
+      this.checkAllSmallEnemiesDead();
+      this.checkWinCondition();
     }, 200);
+  }
+
+  checkAllSmallEnemiesDead() {
+    const remainingSmallEnemies = this.level.enemies.filter(
+      (enemy) =>
+        (enemy instanceof Chicken || enemy instanceof Littlechicken) &&
+        !enemy.isDead
+    );
+    if (remainingSmallEnemies.length === 0 && !this.endbossSpawned) {
+      this.spawnEndboss();
+    }
+  }
+
+  spawnEndboss() {
+    const endboss = new Endboss();
+    this.level.enemies.push(endboss);
+    this.endbossSpawned = true;
+    this.endboss_sound.play();
+    this.endboss_sound.volume = 0.5;
+    this.endboss_sound.loop = true;
   }
 
   checkCollision() {
@@ -48,11 +73,9 @@ class World {
         enemy.x + enemy.width > 0 &&
         this.character.isColliding(enemy)
       ) {
-        console.log("Kollision mit lebendem Gegner:", enemy);
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
         if (!this.character.isDead) {
-          this.hit_Sound.play();
         }
       }
     });
@@ -98,10 +121,9 @@ class World {
       enemy.isDead = true;
       enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
       setTimeout(() => {
-        const enemyIndex = this.level.enemies.indexOf(enemy);
-        if (enemyIndex > -1) {
-          this.level.enemies.splice(enemyIndex, 1);
-          console.log("Chicken aus dem Level entfernt:", enemy);
+        const index = this.level.enemies.indexOf(enemy);
+        if (index > -1) {
+          this.level.enemies.splice(index, 1);
         }
       }, 1000);
     }
@@ -121,8 +143,9 @@ class World {
         const enemyIndex = this.level.enemies.indexOf(enemy);
         if (enemyIndex > -1) {
           this.level.enemies.splice(enemyIndex, 1);
+          this.endboss_sound.pause();
         }
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -155,6 +178,17 @@ class World {
       const newBottle = new Bottle(randomX);
       this.level.bottles.push(newBottle);
     }, 5000);
+  }
+
+  checkWinCondition() {
+    const remainingEnemies = world.level.enemies.filter(
+      (enemy) => !enemy.isDead
+    );
+    if (remainingEnemies.length === 0 && !winScreenDisplayed) {
+      winScreenDisplayed = true;
+      stopAllIntervals();
+      showWinningScreen();
+    }
   }
 
   draw() {

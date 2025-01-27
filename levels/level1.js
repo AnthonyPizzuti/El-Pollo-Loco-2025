@@ -5,7 +5,6 @@ function initLevel() {
       new Chicken(),
       new Chicken(),
       new Chicken(),
-      new Endboss(),
       new Littlechicken(),
       new Littlechicken(),
       new Littlechicken(),

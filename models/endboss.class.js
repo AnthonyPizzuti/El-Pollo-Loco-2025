@@ -59,10 +59,11 @@ class Endboss extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
+  setInterval(() => {
       this.playAnimation(this.IMAGES_WALK);
       this.moveLeft();
     }, 200);
+  
 
     setInterval(() => {
       if (this.isDead) {
@@ -74,10 +75,12 @@ class Endboss extends MovableObject {
       }
     }, 200);
 
+
     setInterval(() => {
       if (!this.isDead) {
         this.playAnimation(this.IMAGES_ATTACK);
       }
     }, 5000);
+
   }
 }

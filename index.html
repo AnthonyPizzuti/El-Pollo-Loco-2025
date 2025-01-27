@@ -24,6 +24,7 @@
     <script src="./models/coin.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./models/start-screen.class.js"></script>
+    <script src="./models/winning-screen.class.js"></script>
     <script src="./js/game.js"></script>
   </head>
   <body onload="showStartScreen()">
@@ -31,6 +32,7 @@
 
     <canvas id="canvas" width="720" height="480"> </canvas>
     <button id="playButton">Play</button>
+    <button id="restart-button" class="hidden">Neustart</button>
 
     <div id="game-controls" class="controls hidden">
       <div id="controls-left-and-right">

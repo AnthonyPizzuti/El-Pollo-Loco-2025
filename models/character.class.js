@@ -94,7 +94,7 @@ class Character extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
+     setInterval(() => {
       this.walking_sound.pause();
       this.jumping_sound.pause();
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -121,7 +121,7 @@ class Character extends MovableObject {
       this.checkSleeping();
     }, 1000 / 60);
 
-    setInterval(() => {
+     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
         this.dead_sound.play();
