@@ -10,8 +10,6 @@ class StartScreen {
     this.ctx = this.canvas.getContext("2d");
     this.startImage.src = imagePath;
     this.playButton = document.getElementById(buttonId);
-
-    // Initialisiere den Startbildschirm
     this.init();
   }
 
@@ -20,9 +18,7 @@ class StartScreen {
       this.drawBackground();
       this.playMusic();
     };
-
     this.startImage.onerror = () => {};
-
     this.playButton.addEventListener("click", () => this.startGame());
   }
 
@@ -38,21 +34,19 @@ class StartScreen {
   }
 
   playMusic() {
-    this.musicSound.loop = true; // Schleifenwiedergabe für die Musik
+    this.musicSound.loop = true;
     this.musicSound.play().catch(() => {});
     this.musicSound.volume = 0.5;
   }
 
   stopMusic() {
     this.musicSound.pause();
-    this.musicSound.currentTime = 0; // Musik von Anfang an starten, falls später wieder benötigt
+    this.musicSound.currentTime = 0;
   }
 
   startGame() {
-    this.stopMusic(); // Musik stoppen
-    this.playButton.style.display = "none"; // Verstecke den Play-Button
-
-    // Übergang zum Spiel
-    init(); // Rufe die init-Funktion aus game.js auf
+    this.stopMusic();
+    this.playButton.style.display = "none";
+    init();
   }
 }

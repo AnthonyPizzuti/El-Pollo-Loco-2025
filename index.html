@@ -12,8 +12,8 @@
     <script src="./models/littlechicken.class.js"></script>
     <script src="./models/cloud.class.js"></script>
     <script src="./models/status-bar.class.js"></script>
-    <script src="./models/coin-bar.class.js"></script>
     <script src="./models/bottle-bar.class.js"></script>
+    <script src="./models/coin-bar.class.js"></script>
     <script src="./models/world.class.js"></script>
     <script src="./models/background-object-class.js"></script>
     <script src="./models/keyboard.class.js"></script>
@@ -31,5 +31,24 @@
 
     <canvas id="canvas" width="720" height="480"> </canvas>
     <button id="playButton">Play</button>
+
+    <div id="game-controls" class="controls hidden">
+      <div id="controls-left-and-right">
+        <button id="left-btn" class="control-btn">
+          <img src="/img/controll/left.png" alt="Left" />
+        </button>
+        <button id="right-btn" class="control-btn">
+          <img src="/img/controll/right.png" alt="Right" />
+        </button>
+      </div>
+      <div id="controls-jump-and-bottle">
+        <button id="jump-btn" class="control-btn">
+          <img src="/img/controll/jump.png" alt="Jump" />
+        </button>
+        <button id="throw-btn" class="control-btn">
+          <img src="/img/controll/bottle.png" alt="Throw" />
+        </button>
+      </div>
+    </div>
   </body>
 </html>
