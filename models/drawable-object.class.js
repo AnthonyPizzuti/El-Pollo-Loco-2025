@@ -18,6 +18,9 @@ class DrawableObject {
   }
 
   drawFrame(ctx) {
+    if (!this.img) {
+      return;
+    }
     if (this instanceof Character || this instanceof Chicken) {
     }
   }

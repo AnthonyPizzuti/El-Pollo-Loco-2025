@@ -2,7 +2,7 @@ class Bottle extends DrawableObject {
   height = 80;
   width = 40;
   y = 350;
-  isCollected = false;
+  isCollectedBottle = false;
 
   IMAGES_BOTTLE = [
     "img/6_salsa_bottle/1_salsa_bottle_on_ground.png",
@@ -20,13 +20,10 @@ class Bottle extends DrawableObject {
 
   animate() {
     setInterval(() => {
-      this.bottle_sound.pause();
-      if ((this.isCollected = true)) {
+      if (this.isCollectedBottle) {
         this.bottle_sound.play();
+        this.isCollectedBottle = false;
       }
     }, 100);
-  }
-  collect() {
-    this.isCollected = true;
   }
 }
