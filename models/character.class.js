@@ -94,7 +94,7 @@ class Character extends MovableObject {
   }
 
   animate() {
-     setInterval(() => {
+    intervalIds.push(setInterval(() => {
       this.walking_sound.pause();
       this.jumping_sound.pause();
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -119,9 +119,9 @@ class Character extends MovableObject {
 
       this.world.camera_x = -this.x + 100;
       this.checkSleeping();
-    }, 1000 / 60);
+    }, 1000 / 60));
 
-     setInterval(() => {
+    intervalIds.push(setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
         this.dead_sound.play();
@@ -135,7 +135,7 @@ class Character extends MovableObject {
           this.playAnimation(this.IMAGES_WALKING);
         }
       }
-    }, 50);
+    }, 50));
   }
 
   jump() {

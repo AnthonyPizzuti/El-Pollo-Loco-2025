@@ -35,15 +35,17 @@ class World {
   }
 
   run() {
-    setInterval(() => {
-      this.checkCollision();
-      this.throwBottle();
-      this.checkCollisionCoin();
-      this.checkCollisionBottle();
-      this.checkBottleEnemyCollision();
-      this.checkAllSmallEnemiesDead();
-      this.checkWinCondition();
-    }, 200);
+    intervalIds.push(
+      setInterval(() => {
+        this.checkCollision();
+        this.throwBottle();
+        this.checkCollisionCoin();
+        this.checkCollisionBottle();
+        this.checkBottleEnemyCollision();
+        this.checkAllSmallEnemiesDead();
+        this.checkWinCondition();
+      }, 200)
+    );
   }
 
   checkAllSmallEnemiesDead() {
@@ -70,13 +72,12 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (
         !enemy.isDead &&
+        enemy.y > 0 &&
         enemy.x + enemy.width > 0 &&
         this.character.isColliding(enemy)
       ) {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
-        if (!this.character.isDead) {
-        }
       }
     });
   }
@@ -104,14 +105,18 @@ class World {
   checkBottleEnemyCollision() {
     this.throwableObjects.forEach((bottle, bottleIndex) => {
       this.level.enemies.forEach((enemy) => {
-        if (bottle.isColliding(enemy)) {
-          this.throwableObjects.splice(bottleIndex, 1);
-          if (enemy instanceof Chicken || enemy instanceof Littlechicken) {
-            this.handleChickenCollision(enemy);
-          } else if (enemy instanceof Endboss) {
-            this.handleEndbossCollision(enemy);
-          }
-        }
+        if (!bottle.isColliding(enemy)) return;
+        bottle.hasHitGround = true;
+        Object.assign(bottle, {
+          x: enemy.x + enemy.width / 2 - bottle.width / 2,
+          y: enemy.y + enemy.height / 2 - bottle.height / 2,
+          speedY: 0,
+        });
+        bottle.playSplashAnimation();
+        setTimeout(() => this.throwableObjects.splice(bottleIndex, 1), 600);
+        enemy instanceof Chicken || enemy instanceof Littlechicken
+          ? this.handleChickenCollision(enemy)
+          : enemy instanceof Endboss && this.handleEndbossCollision(enemy);
       });
     });
   }
@@ -173,11 +178,13 @@ class World {
   }
 
   spawnBottle() {
-    setInterval(() => {
-      const randomX = 100 + Math.random() * 500;
-      const newBottle = new Bottle(randomX);
-      this.level.bottles.push(newBottle);
-    }, 5000);
+    intervalIds.push(
+      setInterval(() => {
+        const randomX = 100 + Math.random() * 500;
+        const newBottle = new Bottle(randomX);
+        this.level.bottles.push(newBottle);
+      }, 5000)
+    );
   }
 
   checkWinCondition() {

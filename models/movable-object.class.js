@@ -7,39 +7,48 @@ class MovableObject extends DrawableObject {
   lastHit = 0;
 
   applyGravity() {
-setInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
-        this.y -= this.speedY;
-        this.speedY -= this.acceleration;
-      }
-    }, 1000 / 25);
+    intervalIds.push(
+        setInterval(() => {
+            if (this instanceof ThrowableObject) {
+                if (this.y >= 400) {
+                    this.y = 400;
+                    this.speedY = 0;
+                } else {
+                    this.y -= this.speedY;
+                    this.speedY -= this.acceleration * 0.3;
+                }
+            } else {
+                if (this.isAboveGround() || this.speedY > 0) {
+                    this.y -= this.speedY;
+                    this.speedY -= this.acceleration;
+                }
+            }
+        }, 1000 / 25)
+    );
+}
 
-  }
-
-  isAboveGround() {
+isAboveGround() {
     if (this instanceof ThrowableObject) {
-      // Throwable object should always fall
-      return true;
+        return this.y < 150;
     } else {
-      return this.y < 150;
+        return this.y < 150;
     }
-  }
+}
+
 
   isColliding(mo) {
+    if (
+      mo.isDead &&
+      ((typeof mo.isDead === "boolean" && mo.isDead) ||
+        (typeof mo.isDead === "function" && mo.isDead()))
+    ) {
+      return false;
+    }
     return (
       this.x + this.width > mo.x &&
       this.y + this.height > mo.y &&
       this.x < mo.x + mo.width &&
       this.y < mo.y + mo.height
-    );
-  }
-
-  isColliding(object) {
-    return (
-      this.x + this.width > object.x &&
-      this.x < object.x + object.width &&
-      this.y + this.height > object.y &&
-      this.y < object.y + object.height
     );
   }
 

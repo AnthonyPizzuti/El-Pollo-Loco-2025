@@ -4,6 +4,7 @@ let world;
 let keyboard = new Keyboard();
 let gameStarted = false;
 let winScreenDisplayed = false;
+let intervalIds = [];
 
 function showStartScreen() {
   new StartScreen(
@@ -104,6 +105,11 @@ document.addEventListener("keyup", (e) => {
     keyboard.D = false;
   }
 });
+
+function stopAllIntervals() {
+  intervalIds.forEach((id) => clearInterval(id));
+  intervalIds = [];
+}
 
 function showWinningScreen() {
   const winningScreen = new WinningScreen(

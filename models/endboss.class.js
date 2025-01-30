@@ -59,13 +59,12 @@ class Endboss extends MovableObject {
   }
 
   animate() {
-  setInterval(() => {
+    let walkInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_WALK);
       this.moveLeft();
     }, 200);
-  
 
-    setInterval(() => {
+    let stateChangeInterval = setInterval(() => {
       if (this.isDead) {
         this.playAnimation(this.IMAGES_DEAD);
       } else if (this.hits >= 3 && this.hits < 7) {
@@ -75,12 +74,11 @@ class Endboss extends MovableObject {
       }
     }, 200);
 
-
-    setInterval(() => {
+    let attackInterval = setInterval(() => {
       if (!this.isDead) {
         this.playAnimation(this.IMAGES_ATTACK);
       }
     }, 5000);
-
+    intervalIds.push(walkInterval, stateChangeInterval, attackInterval);
   }
 }
