@@ -36,15 +36,15 @@ class ThrowableObject extends MovableObject {
     this.applyGravity();
 
     let flightInterval = setInterval(() => {
-        if (!this.hasHitGround) {
-            this.playAnimation(this.IMAGES_BOTTLE);
-            this.x += this.otherDirection ? -10 : 10;
-            this.checkGroundCollision(flightInterval);
-        }
+      if (!this.hasHitGround) {
+        this.playAnimation(this.IMAGES_BOTTLE);
+        this.x += this.otherDirection ? -10 : 10;
+        this.checkGroundCollision(flightInterval);
+      }
     }, 50);
-    
+
     intervalIds.push(flightInterval);
-}
+  }
 
   playThrowSound() {
     this.throw_sound.volume = 0.5;
@@ -65,11 +65,9 @@ class ThrowableObject extends MovableObject {
   playSplashAnimation() {
     this.splash_sound.volume = 0.5;
     this.splash_sound.play();
-
     let splashInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);
     }, 100);
-
     setTimeout(() => {
       clearInterval(splashInterval);
       this.removeBottle();
@@ -77,9 +75,11 @@ class ThrowableObject extends MovableObject {
   }
 
   removeBottle() {
-    const index = world.throwableObjects.indexOf(this);
-    if (index > -1) {
-      world.throwableObjects.splice(index, 1);
+    if (!this.level || !this.level.throwableObjects) {
+      return;
     }
+    this.level.throwableObjects = this.level.throwableObjects.filter(
+      (bottle) => bottle !== this
+    );
   }
 }

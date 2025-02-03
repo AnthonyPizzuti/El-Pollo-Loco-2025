@@ -105,18 +105,17 @@ class World {
   checkBottleEnemyCollision() {
     this.throwableObjects.forEach((bottle, bottleIndex) => {
       this.level.enemies.forEach((enemy) => {
-        if (!bottle.isColliding(enemy)) return;
+        if (!bottle.isColliding(enemy) || bottle.hasHitGround) return;
         bottle.hasHitGround = true;
-        Object.assign(bottle, {
-          x: enemy.x + enemy.width / 2 - bottle.width / 2,
-          y: enemy.y + enemy.height / 2 - bottle.height / 2,
-          speedY: 0,
-        });
         bottle.playSplashAnimation();
+        if (enemy instanceof Endboss) {
+          this.handleEndbossCollision(enemy);
+        } else {
+          enemy instanceof Chicken || enemy instanceof Littlechicken
+            ? this.handleChickenCollision(enemy)
+            : null;
+        }
         setTimeout(() => this.throwableObjects.splice(bottleIndex, 1), 600);
-        enemy instanceof Chicken || enemy instanceof Littlechicken
-          ? this.handleChickenCollision(enemy)
-          : enemy instanceof Endboss && this.handleEndbossCollision(enemy);
       });
     });
   }
@@ -188,15 +187,21 @@ class World {
   }
 
   checkWinCondition() {
-    const remainingEnemies = world.level.enemies.filter(
-      (enemy) => !enemy.isDead
-    );
+    const remainingEnemies = this.level.enemies.filter((enemy) => !enemy.isDead);
     if (remainingEnemies.length === 0 && !winScreenDisplayed) {
-      winScreenDisplayed = true;
-      stopAllIntervals();
-      showWinningScreen();
+        winScreenDisplayed = true;
+        stopAllIntervals();
+        let drawLoopId = requestAnimationFrame(() => {});
+        cancelAnimationFrame(drawLoopId);
+        document.getElementById("canvas").remove();
+        document.getElementById("game-controls").remove();
+        setTimeout(() => {
+            showWinningScreen();
+        }, 100);
     }
-  }
+}
+
+
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

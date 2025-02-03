@@ -112,14 +112,19 @@ function stopAllIntervals() {
 }
 
 function showWinningScreen() {
-  const winningScreen = new WinningScreen(
-    "canvas",
-    "img/9_intro_outro_screens/win/win_2.png"
-  );
-  winningScreen.init();
-  const restartButton = document.getElementById("restart-button");
-  restartButton.classList.remove("hidden");
-  restartButton.addEventListener("click", () => {
-    location.reload();
-  });
+    let winningScreen = new WinningScreen("restartButton");
+    setTimeout(() => {
+        let checkDiv = document.getElementById("winning-screen");
+        if (!checkDiv) {
+        } else {
+        }
+    }, 1000);
 }
+
+
+
+
+  
+  
+
+
