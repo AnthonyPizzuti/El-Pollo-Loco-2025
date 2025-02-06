@@ -3,7 +3,7 @@ class StartScreen {
   ctx;
   startImage = new Image();
   playButton;
-  musicSound = new Audio("audio/music.mp3");
+  startSound = new Audio("audio/startmusic.mp3");
 
   constructor(canvasId, imagePath, buttonId) {
     this.canvas = document.getElementById(canvasId);
@@ -11,6 +11,8 @@ class StartScreen {
     this.startImage.src = imagePath;
     this.playButton = document.getElementById(buttonId);
     this.init();
+    registerSound(this.startSound, true);
+    
   }
 
   init() {
@@ -34,14 +36,14 @@ class StartScreen {
   }
 
   playMusic() {
-    this.musicSound.loop = true;
-    this.musicSound.play().catch(() => {});
-    this.musicSound.volume = 0.5;
+    this.startSound.loop = true;
+    this.startSound.play().catch(() => {});
+    this.startSound.volume = 0.5;
   }
 
   stopMusic() {
-    this.musicSound.pause();
-    this.musicSound.currentTime = 0;
+    this.startSound.pause();
+    this.startSound.currentTime = 0;
   }
 
   startGame() {

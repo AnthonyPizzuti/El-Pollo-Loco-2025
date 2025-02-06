@@ -16,6 +16,21 @@ body {
   background-size: 100%;
 }
 
+#game-container {
+  position: relative;
+  width: 720px;
+  height: 480px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+:fullscreen #game-container,
+:-webkit-full-screen #game-container,
+:-ms-fullscreen #game-container {
+  width: 100vw;
+  height: 100vh;
+}
+
 h1 {
   font-size: 64px;
   letter-spacing: 3px;
@@ -25,11 +40,13 @@ h1 {
 canvas {
   background-color: black;
   display: block;
+  width: 100%;
+  height: -webkit-fill-available;
 }
 
 #playButton {
   position: absolute;
-  top: 40%;
+  top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 15px 30px;
@@ -40,108 +57,224 @@ canvas {
   border-radius: 8px;
   cursor: pointer;
   z-index: 10;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 #playButton:hover {
   background-color: #faf1e081;
 }
 
+.controls.hidden {
+  display: none !important;
+}
+
 .hidden {
   display: none;
 }
 
-#controls-left-and-right {
-  position: fixed;
-  bottom: 1px;
-  left: 20%;
+#game-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
   transform: translateX(-50%);
+  width: 90%;
   z-index: 1000;
-  gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: auto;
 }
 
-#controls-jump-and-bottle {
-  position: fixed;
-  bottom: 1px;
-  left: 80%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  gap: 10px;
-}
-
-#controls-left-and-right-btn,
-#controls-jump-and-bottle-btn {
+.control-btn {
   background: none;
   border: none;
-  padding: 10px;
-  cursor: pointer;
+  height: 40px;
 }
 
-#controls-left-and-right-btn img,
-#controls-jump-and-bottle-btn img {
+.control-btn img {
   width: 50px;
   height: 50px;
 }
 
 #winning-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
-  #winning-screen img {
-    max-width: 90vw;
-    max-height: 90vh;
-  }
-  
-  #winning-screen button {
-    padding: 10px 20px;
-    font-size: 18px;
-    color: white;
-    background-color: #28a745;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  #winning-screen button:hover {
-    background-color: #218838;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
 
-@media only screen and (max-width: 720px) {
-  canvas {
-    width: 100%;
-  }
+#winning-screen img {
+  max-width: 90vw;
+  max-height: 90vh;
+}
 
-  h1 {
-    display: none;
-  }
+#winning-screen button {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #28a745;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+}
 
-  #playButton {
-    top: 30%;
-    margin-top: 30px;
-  }
+#winning-screen button:hover {
+  background-color: #218838;
+}
 
-  #controls-left-and-right,
-  #controls-jump-and-bottle {
-    display: flex;
+#game-over-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#game-over-screen img {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+#game-over-screen button {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: -40px;
+}
+
+#game-over-screen button:hover {
+  background-color: #c82333;
+}
+
+#fullscreen-btn,
+#mute-btn,
+#pause-btn {
+  position: absolute;
+  top: 10px;
+  z-index: 1000;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#fullscreen-btn {
+  right: 10px;
+}
+
+#mute-btn {
+  right: 60px;
+}
+
+#pause-btn {
+  right: 110px;
+}
+
+#fullscreen-btn img,
+#mute-btn img,
+#pause-btn img {
+  width: 40px;
+  height: 40px;
+}
+
+#pause-screen {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2em;
+  text-align: center;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1001;
+  font-size: 4vw;
+  max-width: 90%;
+}
+
+#pause-screen.hidden {
+  display: none;
+}
+
+#pause-screen button {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #28a745;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+#pause-screen button:hover {
+  background-color: #218838;
+}
+
+#restart-btn {
+  background-color: #dc3545;
+}
+
+#restart-btn:hover {
+  background-color: #c82333;
+}
+
+@media only screen and (min-width: 721px) {
+  #game-controls {
+    display: none !important;
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 720px) {
+  #game-container {
+    width: 100%;
+    height: auto;
+  }
+
+  #game-controls {
+    bottom: 10px;
+    width: 95%;
+  }
+
+  .control-btn img {
+    width: 40px;
+    height: 40px;
+  }
+
+  #fullscreen-btn {
+    right: 10px;
+    top: 5px;
+  }
+  #mute-btn {
+    right: 55px;
+    top: 5px;
+  }
+  #pause-btn {
+    right: 100px;
+    top: 5px;
+  }
+
   #playButton {
-    top: 32%;
-    margin-top: 50px;
+    font-size: 20px;
+    padding: 10px 20px;
   }
 }
 
@@ -158,5 +291,10 @@ canvas {
 
   h1 {
     display: none;
+  }
+
+  #pause-screen {
+    padding: 1em;
+    font-size: 4vw;
   }
 }

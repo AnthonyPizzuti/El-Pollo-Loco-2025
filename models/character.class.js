@@ -91,6 +91,12 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
     this.animate();
+    registerSound(this.walking_sound);
+    registerSound(this.jumping_sound);
+    registerSound(this.throwing_sound);
+    registerSound(this.dead_sound);
+    registerSound(this.hurt_sound);
+    registerSound(this.sleep_sound);
   }
 
   animate() {
@@ -144,6 +150,9 @@ class Character extends MovableObject {
 
   checkSleeping() {
     const now = new Date().getTime();
+    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.D) {
+        this.updateLastMovement();
+    }
     if (now - this.lastMovementTime >= 5000 && !this.isSleepingActive) {
       this.isSleepingActive = true;
       this.isSleeping();

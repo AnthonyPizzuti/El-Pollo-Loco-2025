@@ -15,6 +15,8 @@ class World {
   endboss_sound = new Audio("audio/endboss.mp3");
   endbossSpawned = false;
   winScreenDisplayed = false;
+  gameOverDisplayed = false;
+  bossBar = null;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -28,6 +30,10 @@ class World {
     this.draw();
     this.setWorld();
     this.run();
+    registerSound(this.hit_Sound);
+    registerSound(this.bottle_sound);
+    registerSound(this.coin_sound);
+    registerSound(this.endboss_sound);
   }
 
   setWorld() {
@@ -37,6 +43,7 @@ class World {
   run() {
     intervalIds.push(
       setInterval(() => {
+        if (gamePaused) return;
         this.checkCollision();
         this.throwBottle();
         this.checkCollisionCoin();
@@ -44,8 +51,25 @@ class World {
         this.checkBottleEnemyCollision();
         this.checkAllSmallEnemiesDead();
         this.checkWinCondition();
+        this.checkGameOver();
       }, 200)
     );
+  }
+
+  startGameLoop() {
+    if (this.gameLoopActive) return; // Verhindert doppeltes Starten der Schleife
+    this.gameLoopActive = true;
+
+    this.gameLoop = setInterval(() => {
+      this.checkCollision();
+      this.throwBottle();
+      this.checkCollisionCoin();
+      this.checkCollisionBottle();
+      this.checkBottleEnemyCollision();
+      this.checkAllSmallEnemiesDead();
+      this.checkWinCondition();
+      this.checkGameOver();
+    }, 1000 / 60);
   }
 
   checkAllSmallEnemiesDead() {
@@ -66,6 +90,7 @@ class World {
     this.endboss_sound.play();
     this.endboss_sound.volume = 0.5;
     this.endboss_sound.loop = true;
+    this.bossBar = new BossBar();
   }
 
   checkCollision() {
@@ -135,6 +160,9 @@ class World {
 
   handleEndbossCollision(enemy) {
     enemy.hits = (enemy.hits || 0) + 1;
+    if (this.bossBar) {
+      this.bossBar.setPercentage(enemy.hits);
+    }
     if (enemy.hits === 3) {
       enemy.img = enemy.imageCache[enemy.IMAGES_HURT[0]];
       enemy.playAnimation(enemy.IMAGES_HURT);
@@ -187,23 +215,41 @@ class World {
   }
 
   checkWinCondition() {
-    const remainingEnemies = this.level.enemies.filter((enemy) => !enemy.isDead);
+    const remainingEnemies = this.level.enemies.filter(
+      (enemy) => !enemy.isDead
+    );
     if (remainingEnemies.length === 0 && !winScreenDisplayed) {
-        winScreenDisplayed = true;
-        stopAllIntervals();
-        let drawLoopId = requestAnimationFrame(() => {});
-        cancelAnimationFrame(drawLoopId);
-        document.getElementById("canvas").remove();
-        document.getElementById("game-controls").remove();
-        setTimeout(() => {
-            showWinningScreen();
-        }, 100);
+      winScreenDisplayed = true;
+      stopAllIntervals();
+      let drawLoopId = requestAnimationFrame(() => {});
+      cancelAnimationFrame(drawLoopId);
+      document.getElementById("canvas").remove();
+      document.getElementById("game-controls").remove();
+      setTimeout(() => {
+        showWinningScreen();
+      }, 100);
     }
-}
+  }
 
-
+  checkGameOver() {
+    if (this.character.energy <= 0 && !this.gameOverDisplayed) {
+      this.gameOverDisplayed = true;
+      stopAllIntervals();
+      let drawLoopId = requestAnimationFrame(() => {});
+      cancelAnimationFrame(drawLoopId);
+      document.getElementById("canvas")?.remove();
+      document.getElementById("game-controls")?.remove();
+      setTimeout(() => {
+        showGameOverScreen();
+      }, 100);
+    }
+  }
 
   draw() {
+    requestAnimationFrame(() => this.draw());
+    if (gamePaused) {
+      return;
+    }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.translate(this.camera_x, 0);
@@ -214,6 +260,9 @@ class World {
     this.addToMap(this.statusBar);
     this.addToMap(this.bottleBar);
     this.addToMap(this.coinBar);
+    if (this.bossBar) {
+      this.addToMap(this.bossBar);
+    }
     this.ctx.translate(this.camera_x, 0);
 
     this.addToMap(this.character);
@@ -224,12 +273,6 @@ class World {
     this.addObjectsToMap(this.level.coins);
 
     this.ctx.translate(-this.camera_x, 0);
-
-    // Draw() wird immer wieder aufgerufen
-    let self = this;
-    requestAnimationFrame(function () {
-      self.draw();
-    });
   }
 
   addObjectsToMap(objects) {

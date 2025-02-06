@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" href="img/favicon/sombrero.png" type="image/x-icon" />
     <title>El Pollo Loco</title>
     <script src="./models/drawable-object.class.js"></script>
     <script src="./models/movable-object.class.js"></script>
@@ -14,6 +15,7 @@
     <script src="./models/status-bar.class.js"></script>
     <script src="./models/bottle-bar.class.js"></script>
     <script src="./models/coin-bar.class.js"></script>
+    <script src="./models/boss-bar.class.js"></script>
     <script src="./models/world.class.js"></script>
     <script src="./models/background-object-class.js"></script>
     <script src="./models/keyboard.class.js"></script>
@@ -24,15 +26,27 @@
     <script src="./models/coin.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./models/start-screen.class.js"></script>
+    <script src="./models/game-over-screen.class.js"></script>
     <script src="./models/winning-screen.class.js"></script>
     <script src="./js/game.js"></script>
   </head>
   <body onload="showStartScreen()">
     <h1>El pollo loco</h1>
 
-    <canvas id="canvas" width="720" height="480"> </canvas>
-    <button id="playButton">Play</button>
-    <button id="restartButton" class="hidden">Neustart</button>
+    <div id="game-container">
+      <canvas id="canvas" width="720" height="480"> </canvas>
+      <button id="fullscreen-btn">
+        <img src="./img/controll/fullscreen.png" alt="fullscreen" />
+      </button>
+      <button id="mute-btn">
+        <img src="./img/controll/ton.png" alt="mute" />
+      </button>
+      <button id="pause-btn">
+        <img src="./img/controll/pause.png" alt="Pause" />
+      </button>
+      <button id="playButton">Play</button>
+      <button id="restartButton" class="hidden"></button>
+    
 
     <div id="game-controls" class="controls hidden">
       <div id="controls-left-and-right">
@@ -51,6 +65,12 @@
           <img src="/img/controll/bottle.png" alt="Throw" />
         </button>
       </div>
+    </div>
+</div>
+    <div id="pause-screen" class="hidden">
+      <h2>Pause</h2>
+      <button id="resume-btn">Weiter</button>
+      <button id="restart-btn">Neustart</button>
     </div>
   </body>
 </html>

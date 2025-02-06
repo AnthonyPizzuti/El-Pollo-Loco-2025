@@ -28,6 +28,8 @@ class ThrowableObject extends MovableObject {
     this.width = 50;
     this.groundLevel = 400;
     this.trow();
+    registerSound(this.throw_sound);
+    registerSound(this.splash_sound);
   }
 
   trow() {
@@ -47,9 +49,12 @@ class ThrowableObject extends MovableObject {
   }
 
   playThrowSound() {
-    this.throw_sound.volume = 0.5;
-    this.throw_sound.play();
-  }
+    if (!isMuted) {
+        this.throw_sound.volume = 0.5;
+        this.throw_sound.play();
+    }
+}
+
 
   checkGroundCollision(flightInterval) {
     if (this.y >= this.groundLevel && !this.hasHitGround) {
@@ -63,8 +68,10 @@ class ThrowableObject extends MovableObject {
   }
 
   playSplashAnimation() {
-    this.splash_sound.volume = 0.5;
-    this.splash_sound.play();
+    if (!isMuted) {
+        this.splash_sound.volume = 0.5;
+        this.splash_sound.play();
+    }
     let splashInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);
     }, 100);
