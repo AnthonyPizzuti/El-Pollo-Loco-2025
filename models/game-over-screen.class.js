@@ -23,6 +23,7 @@ class GameOverScreen {
   drawBackground() {
     let gameOverScreenDiv = document.createElement("div");
     gameOverScreenDiv.id = "game-over-screen";
+    gameOverScreenDiv.classList.add("overlay");
     let gameOverImageElement = document.createElement("img");
     gameOverImageElement.src = this.gameOverImage.src;
     let restartButton = document.createElement("button");
@@ -30,8 +31,14 @@ class GameOverScreen {
     restartButton.addEventListener("click", () => location.reload());
     gameOverScreenDiv.appendChild(gameOverImageElement);
     gameOverScreenDiv.appendChild(restartButton);
-    document.body.appendChild(gameOverScreenDiv);
+    let container = document.getElementById("game-container");
+    if (container) {
+      container.appendChild(gameOverScreenDiv);
+    } else {
+      document.body.appendChild(gameOverScreenDiv);
+    }
   }
+  
 
   playGameOverMusic() {
     this.gameOverSound.play().catch(() => {});

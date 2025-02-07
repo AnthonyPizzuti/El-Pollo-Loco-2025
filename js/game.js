@@ -18,8 +18,13 @@ function showStartScreen() {
     "playButton"
   );
   document.getElementById("playButton").addEventListener("click", () => {
+    gameStarted = true;
     document.getElementById("game-controls").classList.remove("hidden");
     document.getElementById("playButton").classList.add("hidden");
+    document.getElementById("pause-btn").style.display = "block";
+    let pauseBtn = document.getElementById("pause-btn");
+    pauseBtn.style.display = "block";
+    pauseBtn.style.pointerEvents = "auto";
     init();
   });
 }
@@ -59,6 +64,8 @@ function init() {
 }
 
 document.addEventListener("keydown", (e) => {
+  if (!gameStarted) return;
+
   if (e.keyCode == 39) {
     keyboard.RIGHT = true;
   }
@@ -201,20 +208,20 @@ function toggleMute() {
   let muteButton = document.getElementById("mute-btn").querySelector("img");
   if (isMuted) {
     muteButton.src = "./img/controll/mute.png";
-    muteAllSounds(true);
   } else {
     muteButton.src = "./img/controll/ton.png";
-    muteAllSounds(false);
   }
+  muteAllSounds();
 }
 
-function muteAllSounds(mute) {
+function muteAllSounds() {
   allGameSounds.forEach((sound) => {
     if (sound) {
-      sound.muted = mute;
-      if (mute) {
+      if (isMuted) {
+        sound.muted = true;
         sound.pause();
       } else {
+        sound.muted = false;
         if (sound.loop && !sound.isStartSound) {
           sound.play().catch(() => {});
         }
@@ -226,6 +233,7 @@ function muteAllSounds(mute) {
 function registerSound(sound, isStartSound = false) {
   if (sound && !allGameSounds.includes(sound)) {
     sound.isStartSound = isStartSound;
+    sound.muted = isMuted;
     allGameSounds.push(sound);
   }
 }
@@ -242,10 +250,12 @@ function togglePause() {
   gamePaused = !gamePaused;
   let pauseScreen = document.getElementById("pause-screen");
   if (gamePaused) {
-    muteAllSounds(true);
+    isMuted = true;
+    muteAllSounds();
     pauseScreen.classList.remove("hidden");
   } else {
-    muteAllSounds(false);
+    isMuted = false;
+    muteAllSounds();
     pauseScreen.classList.add("hidden");
   }
 }
@@ -266,14 +276,45 @@ document.addEventListener("DOMContentLoaded", () => {
   let pauseBtn = document.getElementById("pause-btn");
   if (resumeBtn) {
     resumeBtn.addEventListener("click", resumeGame);
-  } else {
   }
   if (restartBtn) {
     restartBtn.addEventListener("click", restartGame);
-  } else {
   }
   if (pauseBtn) {
     pauseBtn.addEventListener("click", togglePause);
-  } else {
   }
+  checkOrientation();
+  window.addEventListener("resize", checkOrientation);
+  window.addEventListener("orientationchange", checkOrientation);
 });
+
+function checkOrientation() {
+  const overlay = document.getElementById("orientation-overlay");
+  const pauseScreen = document.getElementById("pause-screen");
+  if (!overlay || !pauseScreen) return;
+  if (isMobile()) {
+    if (window.innerHeight > window.innerWidth) {
+      overlay.style.display = "flex";
+      if (gameStarted && !gamePaused) {
+        gamePaused = true;
+        isMuted = true;
+        muteAllSounds();
+        pauseScreen.classList.remove("hidden");
+      }
+    } else {
+      overlay.style.display = "none";
+      if (gamePaused && gameStarted) {
+        gamePaused = false;
+        isMuted = false;
+        muteAllSounds();
+        pauseScreen.classList.add("hidden");
+      }
+    }
+  } else {
+    overlay.style.display = "none";
+  }
+}
+
+function isMobile() {
+  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
