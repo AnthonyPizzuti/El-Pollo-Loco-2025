@@ -113,20 +113,17 @@ class Character extends MovableObject {
       this.updateLastMovement();
       this.walking_sound.play();
     }
-
     if (this.canMoveLeft()) {
       this.moveLeft();
       this.otherDirection = true;
       this.updateLastMovement();
       this.walking_sound.play();
     }
-
     if (this.canJump()) {
       this.jump();
       this.updateLastMovement();
       this.jumping_sound.play();
     }
-
     this.world.camera_x = -this.x + 100;
     this.checkSleeping();
   }
