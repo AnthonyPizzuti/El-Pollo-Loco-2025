@@ -18,7 +18,7 @@ body {
   min-height: 100vh;
   margin: 0;
   font-family: "zabars", Arial, Helvetica, sans-serif;
-  background-image: url("/img/5_background/desert.png");
+  background-image: url("./img/5_background/desert.png");
   background-position: center;
   background-size: 100%;
 }
