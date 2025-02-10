@@ -36,7 +36,6 @@ class ThrowableObject extends MovableObject {
     this.playThrowSound();
     this.speedY = 18;
     this.applyGravity();
-
     let flightInterval = setInterval(() => {
       if (!this.hasHitGround) {
         this.playAnimation(this.IMAGES_BOTTLE);
@@ -44,17 +43,15 @@ class ThrowableObject extends MovableObject {
         this.checkGroundCollision(flightInterval);
       }
     }, 50);
-
     intervalIds.push(flightInterval);
   }
 
   playThrowSound() {
     if (!isMuted) {
-        this.throw_sound.volume = 0.5;
-        this.throw_sound.play();
+      this.throw_sound.volume = 0.5;
+      this.throw_sound.play();
     }
-}
-
+  }
 
   checkGroundCollision(flightInterval) {
     if (this.y >= this.groundLevel && !this.hasHitGround) {
@@ -69,8 +66,8 @@ class ThrowableObject extends MovableObject {
 
   playSplashAnimation() {
     if (!isMuted) {
-        this.splash_sound.volume = 0.5;
-        this.splash_sound.play();
+      this.splash_sound.volume = 0.5;
+      this.splash_sound.play();
     }
     let splashInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);

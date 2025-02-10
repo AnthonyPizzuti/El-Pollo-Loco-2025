@@ -8,47 +8,44 @@ class MovableObject extends DrawableObject {
 
   applyGravity() {
     intervalIds.push(
-        setInterval(() => {
-            if (this instanceof ThrowableObject) {
-                if (this.y >= 400) {
-                    this.y = 400;
-                    this.speedY = 0;
-                } else {
-                    this.y -= this.speedY;
-                    this.speedY -= this.acceleration * 0.3;
-                }
-            } else {
-                if (this.isAboveGround() || this.speedY > 0) {
-                    this.y -= this.speedY;
-                    this.speedY -= this.acceleration;
-                }
-            }
-        }, 1000 / 25)
+      setInterval(() => {
+        if (this instanceof ThrowableObject) {
+          if (this.y >= 400) {
+            this.y = 400;
+            this.speedY = 0;
+          } else {
+            this.y -= this.speedY;
+            this.speedY -= this.acceleration * 0.3;
+          }
+        } else {
+          if (this.isAboveGround() || this.speedY > 0) {
+            this.y -= this.speedY;
+            this.speedY -= this.acceleration;
+          }
+        }
+      }, 1000 / 25)
     );
-}
+  }
 
-isAboveGround() {
+  isAboveGround() {
     if (this instanceof ThrowableObject) {
-        return this.y < 150;
+      return this.y < 150;
     } else {
-        return this.y < 150;
+      return this.y < 150;
     }
-}
-
+  }
 
   isColliding(mo) {
-    if (
-      mo.isDead &&
-      ((typeof mo.isDead === "boolean" && mo.isDead) ||
-        (typeof mo.isDead === "function" && mo.isDead()))
-    ) {
+    if (!mo || mo.isDead) {
       return false;
     }
+    const bufferX = 10;
+    const bufferY = 20;
     return (
-      this.x + this.width > mo.x &&
-      this.y + this.height > mo.y &&
-      this.x < mo.x + mo.width &&
-      this.y < mo.y + mo.height
+      this.x + this.width - bufferX > mo.x &&
+      this.y + this.height - bufferY > mo.y - 20 &&
+      this.x + bufferX < mo.x + mo.width &&
+      this.y + bufferY < mo.y + mo.height + 20
     );
   }
 

@@ -3,6 +3,13 @@
   src: url("fonts/zabars.ttf") format("truetype");
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* 💡 Verhindert horizontale Scrollbalken */
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -164,7 +171,8 @@ canvas {
 
 #fullscreen-btn,
 #mute-btn,
-#pause-btn {
+#pause-btn,
+#impressum-icon {
   position: absolute;
   top: 10px;
   z-index: 1000;
@@ -189,7 +197,8 @@ canvas {
 
 #fullscreen-btn img,
 #mute-btn img,
-#pause-btn img {
+#pause-btn img,
+#impressum-icon img {
   width: 40px;
   height: 40px;
 }
@@ -268,8 +277,6 @@ canvas {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  margin-top: 20px;
-  padding: 15px;
   color: rgb(0, 0, 0);
   width: 90%;
   margin-left: auto;
@@ -299,6 +306,39 @@ canvas {
   color: #ffc91d;
   text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black,
     2px 2px 0 black;
+}
+
+#impressum-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#impressum-container h1 {
+  font-size: 24px;
+}
+
+#impressum-container p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#impressum-container a {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 15px;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+#impressum-container a:hover {
+  background: #0056b3;
 }
 
 @media only screen and (min-width: 721px) {
@@ -340,6 +380,24 @@ canvas {
     font-size: 20px;
     padding: 10px 20px;
   }
+
+  #how-to-play {
+    flex-wrap: wrap;
+    font-size: 14px;
+    gap: 15px;
+  }
+
+  #how-to-play h2 {
+    font-size: 18px;
+  }
+
+  #how-to-play p {
+    font-size: 16px;
+  }
+
+  #how-to-play span {
+    font-size: 14px;
+  }
 }
 
 @media only screen and (max-width: 350px) {
@@ -360,5 +418,22 @@ canvas {
   #pause-screen {
     padding: 1em;
     font-size: 4vw;
+  }
+
+  #how-to-play {
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  #how-to-play h2 {
+    font-size: 16px;
+  }
+
+  #how-to-play p {
+    font-size: 14px;
+  }
+
+  #how-to-play span {
+    font-size: 12px;
   }
 }

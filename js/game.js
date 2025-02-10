@@ -121,6 +121,14 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
+function closeImpressum() {
+  if (window.opener) {
+    window.close();
+  } else {
+    window.location.href = "index.html";
+  }
+}
+
 function stopAllIntervals() {
   intervalIds.forEach(clearInterval);
   intervalIds = [];

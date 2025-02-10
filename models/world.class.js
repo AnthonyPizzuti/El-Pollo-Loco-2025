@@ -57,9 +57,8 @@ class World {
   }
 
   startGameLoop() {
-    if (this.gameLoopActive) return; // Verhindert doppeltes Starten der Schleife
+    if (this.gameLoopActive) return;
     this.gameLoopActive = true;
-
     this.gameLoop = setInterval(() => {
       this.checkCollision();
       this.throwBottle();
@@ -95,14 +94,11 @@ class World {
 
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
-      if (
-        !enemy.isDead &&
-        enemy.y > 0 &&
-        enemy.x + enemy.width > 0 &&
-        this.character.isColliding(enemy)
-      ) {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
+      if (!enemy.isDead) {
+        if (this.character.isColliding(enemy)) {
+          this.character.hit();
+          this.statusBar.setPercentage(this.character.energy);
+        }
       }
     });
   }
@@ -196,10 +192,7 @@ class World {
   throwBottle() {
     if (this.keyboard && this.keyboard.D && this.character.bottles > 0) {
       this.character.throwBottle();
-      const bottle = new ThrowableObject(
-        this.character.x + 100,
-        this.character.y + 100
-      );
+      const bottle = new ThrowableObject();
       this.throwableObjects.push(bottle);
     }
   }
@@ -270,6 +263,19 @@ class World {
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.throwableObjects);
+    this.ctx.strokeStyle = "red";
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(
+      this.character.x,
+      this.character.y,
+      this.character.width,
+      this.character.height
+    );
+    this.level.enemies.forEach((enemy) => {
+      this.ctx.strokeStyle = "blue";
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
+    });
     this.addObjectsToMap(this.level.coins);
 
     this.ctx.translate(-this.camera_x, 0);
