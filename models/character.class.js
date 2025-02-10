@@ -200,20 +200,21 @@ class Character extends MovableObject {
   }
 
   throwBottle() {
-    if (this.bottles > 0) {
-      this.bottles -= 1;
-      const percentage = Math.max((this.bottles / this.totalBottles) * 100, 0);
-      this.world.bottleBar.setPercentage(percentage);
-      let bottleX = this.x + 100;
-      let bottleY = this.y + 100;
-      let bottle = new ThrowableObject(bottleX, bottleY);
-      bottle.otherDirection = this.otherDirection;
-      bottle.speedY = 5;
-      bottle.speedX = this.otherDirection ? -5 : 5;
-      this.world.throwableObjects.push(bottle);
-      bottle.applyGravity();
-      bottle.trow();
-    }
+    if (this.bottles <= 0) return;
+    this.bottles--;
+    this.world.bottleBar.setPercentage(
+      (this.bottles / this.totalBottles) * 100
+    );
+    let bottle = new ThrowableObject(
+      this.x + (this.otherDirection ? -20 : 100),
+      this.y + 100
+    );
+    bottle.otherDirection = this.otherDirection;
+    bottle.speedY = 5;
+    bottle.speedX = this.otherDirection ? -5 : 5;
+    (this.world.throwableObjects ||= []).push(bottle);
+    bottle.applyGravity();
+    bottle.trow();
   }
 
   collectCoin() {

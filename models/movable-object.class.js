@@ -36,17 +36,18 @@ class MovableObject extends DrawableObject {
   }
 
   isColliding(mo) {
-    if (!mo || mo.isDead) {
-      return false;
+    if (!mo || mo.isDead) return false;
+    let collision =
+      this.x + this.width > mo.x &&
+      this.y + this.height > mo.y &&
+      this.x < mo.x + mo.width &&
+      this.y < mo.y + mo.height;
+    if (collision) {
+      console.log(
+        `💥 Kollision erkannt: ${this.constructor.name} trifft ${mo.constructor.name} bei (${this.x}, ${this.y})`
+      );
     }
-    const bufferX = 10;
-    const bufferY = 20;
-    return (
-      this.x + this.width - bufferX > mo.x &&
-      this.y + this.height - bufferY > mo.y - 20 &&
-      this.x + bufferX < mo.x + mo.width &&
-      this.y + bufferY < mo.y + mo.height + 20
-    );
+    return collision;
   }
 
   hit() {

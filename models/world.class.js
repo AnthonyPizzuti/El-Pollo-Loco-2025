@@ -125,19 +125,19 @@ class World {
 
   checkBottleEnemyCollision() {
     this.throwableObjects.forEach((bottle, bottleIndex) => {
-      this.level.enemies.forEach((enemy) => {
-        if (!bottle.isColliding(enemy) || bottle.hasHitGround) return;
-        bottle.hasHitGround = true;
-        bottle.playSplashAnimation();
-        if (enemy instanceof Endboss) {
-          this.handleEndbossCollision(enemy);
-        } else {
-          enemy instanceof Chicken || enemy instanceof Littlechicken
-            ? this.handleChickenCollision(enemy)
-            : null;
+      if (bottle.hasHitGround) return;
+      for (let i = 0; i < this.level.enemies.length; i++) {
+        let enemy = this.level.enemies[i];
+        if (!enemy.isDead && bottle.isColliding(enemy)) {
+          if (enemy instanceof Endboss) {
+            this.handleEndbossCollision(enemy);
+          } else {
+            this.handleChickenCollision(enemy);
+          }
+          this.throwableObjects.splice(bottleIndex, 1);
+          return;
         }
-        setTimeout(() => this.throwableObjects.splice(bottleIndex, 1), 600);
-      });
+      }
     });
   }
 
@@ -156,26 +156,22 @@ class World {
 
   handleEndbossCollision(enemy) {
     enemy.hits = (enemy.hits || 0) + 1;
-    if (this.bossBar) {
-      this.bossBar.setPercentage(enemy.hits);
-    }
+    this.bossBar?.setPercentage(enemy.hits);
     if (enemy.hits === 3) {
-      enemy.img = enemy.imageCache[enemy.IMAGES_HURT[0]];
-      enemy.playAnimation(enemy.IMAGES_HURT);
+        enemy.img = enemy.imageCache[enemy.IMAGES_HURT[0]];
+        enemy.playAnimation(enemy.IMAGES_HURT);
     }
     if (enemy.hits >= 7) {
-      enemy.isDead = true;
-      enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
-      enemy.playAnimation(enemy.IMAGES_DEAD);
-      setTimeout(() => {
-        const enemyIndex = this.level.enemies.indexOf(enemy);
-        if (enemyIndex > -1) {
-          this.level.enemies.splice(enemyIndex, 1);
-          this.endboss_sound.pause();
-        }
-      }, 1000);
+        enemy.isDead = true;
+        enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
+        enemy.playAnimation(enemy.IMAGES_DEAD);
+        setTimeout(() => {
+            let i = this.level.enemies.indexOf(enemy);
+            if (i > -1) this.level.enemies.splice(i, 1), this.endboss_sound.pause();
+        }, 1000);
     }
-  }
+}
+
 
   collectCoin() {
     this.coins += 1;

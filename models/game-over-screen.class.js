@@ -38,10 +38,11 @@ class GameOverScreen {
       document.body.appendChild(gameOverScreenDiv);
     }
   }
-  
 
   playGameOverMusic() {
-    this.gameOverSound.play().catch(() => {});
-    this.gameOverSound.volume = 0.5;
+    if (!isMuted) {
+      this.gameOverSound.volume = 0.5;
+      this.gameOverSound.play().catch(() => {});
+    }
   }
 }

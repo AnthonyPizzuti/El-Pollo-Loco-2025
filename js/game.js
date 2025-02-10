@@ -1,7 +1,10 @@
 let canvas;
 let ctx;
 let world;
-let keyboard = new Keyboard();
+window.keyboard = {};
+if (document.getElementById("canvas")) {
+  window.keyboard = new Keyboard();
+}
 let gameStarted = false;
 let winScreenDisplayed = false;
 let intervalIds = [];
@@ -19,6 +22,7 @@ function showStartScreen() {
   );
   document.getElementById("playButton").addEventListener("click", () => {
     gameStarted = true;
+    document.getElementById("impressum-icon").style.display = "none";
     document.getElementById("game-controls").classList.remove("hidden");
     document.getElementById("playButton").classList.add("hidden");
     document.getElementById("pause-btn").style.display = "block";
@@ -270,6 +274,7 @@ function togglePause() {
 
 function resumeGame() {
   gamePaused = false;
+  isMuted = false;
   document.getElementById("pause-screen").classList.add("hidden");
   muteAllSounds(false);
 }

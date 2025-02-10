@@ -57,11 +57,11 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 15px 30px;
-  font-size: 24px;
-  background-color: #faf1e0;
+  font-size: 48px;
+  background-color: #ffa400;
   color: black;
-  border: none;
   border-radius: 8px;
+  font-family: "zabars", Arial, Helvetica, sans-serif;
   cursor: pointer;
   z-index: 10;
 }
@@ -304,8 +304,7 @@ canvas {
 #how-to-play span {
   font-weight: bold;
   color: #ffc91d;
-  text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black,
-    2px 2px 0 black;
+  text-shadow: 1px 0 black, 0px 0px 0 black, 0px 0px 0 black, 2px 1px 0 black;
 }
 
 #impressum-container {
@@ -394,16 +393,6 @@ canvas {
 
   #how-to-play p {
     font-size: 16px;
-  }
-
-  #how-to-play span {
-    font-size: 14px;
-  }
-}
-
-@media only screen and (max-width: 350px) {
-  #playButton {
-    top: 34%;
   }
 }
 
