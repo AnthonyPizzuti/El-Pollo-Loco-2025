@@ -1,9 +1,17 @@
+/**
+ * Repräsentiert ein kleines Chicken als Gegner im Spiel.
+ * Erbt von `MovableObject` und bewegt sich von rechts nach links.
+ */
 class Littlechicken extends MovableObject {
   y = 380;
   height = 50;
   width = 70;
   isDead = false;
 
+  /**
+   * Offset für die Hitbox-Anpassung.
+   * @type {{top: number, bottom: number, left: number, right: number}}
+   */
   offset = {
     top: 5,
     bottom: 10,
@@ -11,16 +19,32 @@ class Littlechicken extends MovableObject {
     right: 5,
   };
 
+  /**
+   * Bilder für die Laufanimation.
+   * @type {string[]}
+   */
   IMAGES_WALKING = [
     "img/3_enemies_chicken/chicken_small/1_walk/1_w.png",
     "img/3_enemies_chicken/chicken_small/1_walk/2_w.png",
     "img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ];
 
+  /**
+   * Bild für das tote Littlechicken.
+   * @type {string[]}
+   */
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
+
+  /**
+   * Soundeffekt für das Chicken-Geräusch.
+   * @type {HTMLAudioElement}
+   */
   chicken_sound = new Audio("audio/chicken.mp3");
   chicken_dead_sound = new Audio("audio/chicken_dead.mp3");
 
+  /**
+   * Erstellt ein neues `Littlechicken`-Objekt.
+   */
   constructor() {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -32,6 +56,9 @@ class Littlechicken extends MovableObject {
     registerSound(this.chicken_dead_sound);
   }
 
+  /**
+   * Startet die Animation des Littlechicken (Laufen & Sterben).
+   */
   animate() {
     let movementInterval = setInterval(() => {
       if (!this.isDead) {
@@ -44,7 +71,6 @@ class Littlechicken extends MovableObject {
         this.chicken_sound.pause();
       }
     }, 1000 / 60);
-
     let animationInterval = setInterval(() => {
       if (this.isDead) {
         this.playAnimation(this.IMAGES_DEAD);

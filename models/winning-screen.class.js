@@ -1,4 +1,13 @@
+/**
+ * Repräsentiert den Gewinn-Bildschirm, der erscheint, wenn der Spieler das Spiel gewinnt.
+ * Diese Klasse erstellt das Gewinn-Overlay, spielt den Gewinn-Sound ab
+ * und ermöglicht das Neustarten des Spiels.
+ */
 class WinningScreen {
+  /**
+   * Erstellt eine neue Instanz des Gewinn-Bildschirms.
+   * @param {string} buttonId - Die ID des Neustart-Buttons.
+   */
   constructor(buttonId) {
     this.restartButton = document.getElementById(buttonId);
     if (!this.restartButton) {
@@ -19,6 +28,9 @@ class WinningScreen {
     }
   }
 
+  /**
+   * Erstellt das Overlay für den Gewinn-Bildschirm und zeigt das Gewinnbild an.
+   */
   drawBackground() {
     let winningScreenDiv = document.createElement("div");
     winningScreenDiv.id = "winning-screen";
@@ -38,8 +50,11 @@ class WinningScreen {
     }
   }
 
+  /**
+   * Spielt die Gewinn-Musik ab, wenn das Spiel gewonnen wurde.
+   */
   playWinMusic() {
     this.winSound.play().catch(() => {});
-    this.winSound.volume = 0.5;
+    this.winSound.volume = 0.3;
   }
 }

@@ -1,9 +1,20 @@
+/**
+ * Klasse `Chicken` repräsentiert einen gegnerischen Charakter (Huhn) im Spiel.
+ * Erbt von `MovableObject` und kann sich nach links bewegen, Animationen abspielen
+ * und sterben, wenn er getroffen wird.
+ *
+ * @extends MovableObject
+ */
 class Chicken extends MovableObject {
   y = 330;
   height = 100;
   isDead = false;
   deadSoundPlayed = false;
 
+  /**
+   * Offset-Werte für die Kollisionserkennung des Chickens.
+   * @type {Object}
+   */
   offset = {
     top: 2,
     bottom: 2,
@@ -11,16 +22,36 @@ class Chicken extends MovableObject {
     right: 5,
   };
 
+  /**
+   * Bildpfade für die Lauf-Animation des Chickens.
+   * @type {string[]}
+   */
   IMAGES_WALKING = [
     "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
     "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
     "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png",
   ];
 
+  /**
+   * Bildpfad für das tote Chicken.
+   * @type {string[]}
+   */
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_normal/2_dead/dead.png"];
+
+  /**
+   * Sound für das lebendige Chicken.
+   * @type {HTMLAudioElement}
+   */
   chicken_sound = new Audio("audio/chicken.mp3");
   chicken_dead_sound = new Audio("audio/chicken_dead.mp3");
 
+  /**
+   * Erstellt eine neue Instanz eines Chickens.
+   * Lädt Bilder, setzt eine zufällige Position und Geschwindigkeit, registriert Sounds
+   * und startet die Animation.
+   *
+   * @param {World} world - Die Spielwelt, zu der das Chicken gehört.
+   */
   constructor(world) {
     super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -32,6 +63,11 @@ class Chicken extends MovableObject {
     registerSound(this.chicken_dead_sound);
   }
 
+  /**
+   * Startet die Bewegung und Animation des Chickens.
+   * Das Chicken bewegt sich nach links, spielt Lauf-Animationen ab
+   * und stoppt, wenn es stirbt.
+   */
   animate() {
     let movementInterval = setInterval(() => {
       if (!this.isDead) {
@@ -60,6 +96,11 @@ class Chicken extends MovableObject {
     intervalIds.push(movementInterval, animationInterval);
   }
 
+  /**
+   * Lässt das Chicken sterben.
+   * Setzt den Status `isDead` auf `true`, spielt die Sterbeanimation
+   * und entfernt das Chicken nach kurzer Zeit aus der Liste der Gegner.
+   */
   die() {
     if (this.isDead) return;
     this.isDead = true;
@@ -71,9 +112,6 @@ class Chicken extends MovableObject {
         let index = this.world.level.enemies.indexOf(this);
         if (index > -1) {
           this.world.level.enemies.splice(index, 1);
-          console.log(
-            `🗑️ Chicken entfernt aus dem Spiel: (${this.x}, ${this.y})`
-          );
         }
       }
     }, 1000);

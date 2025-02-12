@@ -1,4 +1,16 @@
+/**
+ * Erstellt eine globale Variable `level1`, die die Level-Instanz speichert.
+ */
 let level1;
+
+/**
+ * Initialisiert das Level und definiert seine Bestandteile:
+ * - Gegner (Chickens und Littlechickens)
+ * - Wolken
+ * - Hintergrund-Objekte (mehrere Schichten für Parallax-Effekt)
+ * - Flaschen (Bottles), die der Spieler einsammeln kann
+ * - Münzen (Coins), die der Spieler einsammeln kann
+ */
 function initLevel() {
   level1 = new Level(
     [

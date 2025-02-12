@@ -1,3 +1,7 @@
+/**
+ * @file game.js - Hauptsteuerung für das Spiel, initialisiert das Spielfeld,
+ * verwaltet die Steuerung, den Spielstatus, den Sound und die Fullscreen-Optionen.
+ */
 let canvas;
 let ctx;
 let world;
@@ -14,6 +18,9 @@ let allGameSounds = [];
 let gamePaused = false;
 let pausedIntervals = [];
 
+/**
+ * Zeigt den Startbildschirm an und startet das Spiel bei Klick auf "Play".
+ */
 function showStartScreen() {
   new StartScreen(
     "canvas",
@@ -33,6 +40,9 @@ function showStartScreen() {
   });
 }
 
+/**
+ * Initialisiert das Spiel, erstellt das Spielfeld und setzt Event-Listener für Steuerung.
+ */
 function init() {
   if (!world) {
     initLevel();
@@ -40,7 +50,10 @@ function init() {
     world = new World(canvas, keyboard);
     world.setLevel(level1);
   }
-  
+
+  /**
+ * Fügt Event-Listener für die Touch-Steuerung hinzu.
+ */
   document.getElementById("left-btn").addEventListener("touchstart", () => {
     keyboard.LEFT = true;
   });
@@ -70,64 +83,50 @@ function init() {
   });
 }
 
+/**
+ * Behandelt Tastendruck-Ereignisse.
+ * @param {KeyboardEvent} e - Das Keydown-Event.
+ */
 document.addEventListener("keydown", (e) => {
   if (!gameStarted) return;
-
-  if (e.keyCode == 39) {
-    keyboard.RIGHT = true;
+  if (e.keyCode == 39) { keyboard.RIGHT = true;
   }
-
-  if (e.keyCode == 37) {
-    keyboard.LEFT = true;
+  if (e.keyCode == 37) { keyboard.LEFT = true;
   }
-
-  if (e.keyCode == 38) {
-    keyboard.UP = true;
+  if (e.keyCode == 38) { keyboard.UP = true;
   }
-
-  if (e.keyCode == 40) {
-    keyboard.DOWN = true;
+  if (e.keyCode == 40) { keyboard.DOWN = true;
   }
-
-  if (e.keyCode == 32) {
-    keyboard.SPACE = true;
+  if (e.keyCode == 32) { keyboard.SPACE = true;
   }
-
-  if (e.keyCode == 68) {
-    keyboard.D = true;
+  if (e.keyCode == 68) { keyboard.D = true;
   }
-
-  if (e.keyCode == 80) {
-    togglePause();
+  if (e.keyCode == 80) { togglePause();
   }
 });
 
+/**
+ * Behandelt das Loslassen einer Taste.
+ * @param {KeyboardEvent} e - Das Keyup-Event.
+ */
 document.addEventListener("keyup", (e) => {
-  if (e.keyCode == 39) {
-    keyboard.RIGHT = false;
+  if (e.keyCode == 39) { keyboard.RIGHT = false;
   }
-
-  if (e.keyCode == 37) {
-    keyboard.LEFT = false;
+  if (e.keyCode == 37) { keyboard.LEFT = false;
   }
-
-  if (e.keyCode == 38) {
-    keyboard.UP = false;
+  if (e.keyCode == 38) { keyboard.UP = false;
   }
-
-  if (e.keyCode == 40) {
-    keyboard.DOWN = false;
+  if (e.keyCode == 40) { keyboard.DOWN = false;
   }
-
-  if (e.keyCode == 32) {
-    keyboard.SPACE = false;
+  if (e.keyCode == 32) { keyboard.SPACE = false;
   }
-
-  if (e.keyCode == 68) {
-    keyboard.D = false;
+  if (e.keyCode == 68) { keyboard.D = false;
   }
 });
 
+/**
+ * Schließt das Impressum und kehrt zum Spiel zurück.
+ */
 function closeImpressum() {
   if (window.opener) {
     window.close();
@@ -136,6 +135,9 @@ function closeImpressum() {
   }
 }
 
+/**
+ * Stoppt alle gesetzten Intervalle und beendet das Zeichnen der Welt.
+ */
 function stopAllIntervals() {
   intervalIds.forEach(clearInterval);
   intervalIds = [];
@@ -145,6 +147,9 @@ function stopAllIntervals() {
   }
 }
 
+/**
+ * Startet alle notwendigen Intervalle neu.
+ */
 function restartIntervals() {
   if (!world) return;
   world.draw();
@@ -152,52 +157,48 @@ function restartIntervals() {
   world.run();
 }
 
+/**
+ * Zeigt den Gewinnbildschirm an.
+ */
 function showWinningScreen() {
-  let winningScreen = new WinningScreen("restartButton");
-  setTimeout(() => {
-    let checkDiv = document.getElementById("winning-screen");
-    if (!checkDiv) {
-    } else {
-    }
-  }, 1000);
-}
+    let winningScreen = new WinningScreen("restartButton");
+    setTimeout(() => {}, 1000);
+  }
 
+/**
+ * Zeigt den Game-Over-Bildschirm an und stoppt das Zeichnen.
+ */
 function gameOver() {
   world.stopDrawing();
   showGameOverScreen();
 }
 
+/**
+ * Zeigt den Game-Over-Bildschirm an.
+ */
 function showGameOverScreen() {
-  let gameOverScreen = new GameOverScreen("restartButton");
-  setTimeout(() => {
-    let checkDiv = document.getElementById("game-over-screen");
-    if (!checkDiv) {
-    } else {
-    }
-  }, 1000);
-}
+    let gameOverScreen = new GameOverScreen("restartButton");
+    setTimeout(() => {}, 1000);
+  }
 
-function toggleFullscreen() {
-  let container = document.getElementById("game-container");
-  if (!document.fullscreenElement) {
-    if (container.requestFullscreen) {
-      container.requestFullscreen();
-    } else if (container.msRequestFullscreen) {
-      container.msRequestFullscreen();
-    } else if (container.webkitRequestFullscreen) {
-      container.webkitRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
+  /**
+ * Schaltet zwischen Vollbild- und Fenstermodus.
+ */
+  function toggleFullscreen() {
+    let container = document.getElementById("game-container");
+    if (!document.fullscreenElement) {
+      container.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
     }
   }
-}
 
+  /**
+ * Aktiviert den Vollbildmodus für das angegebene HTML-Element.
+ * Unterstützt verschiedene Browser-spezifische Methoden für Fullscreen.
+ *
+ * @param {HTMLElement} element - Das HTML-Element, das in den Vollbildmodus gesetzt werden soll.
+ */
 function enterFullscreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
@@ -208,6 +209,10 @@ function enterFullscreen(element) {
   }
 }
 
+/**
+ * Beendet den Vollbildmodus, falls dieser aktiv ist.
+ * Unterstützt verschiedene Browser-spezifische Methoden zum Verlassen des Fullscreen-Modus.
+ */
 function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -215,14 +220,21 @@ function exitFullscreen() {
     document.webkitExitFullscreen();
   }
 }
+
+/**
+ * Wartet darauf, dass das DOM vollständig geladen ist, 
+ * und fügt dann einen Event-Listener zum Fullscreen-Button hinzu.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   let fullscreenBtn = document.getElementById("fullscreen-btn");
   if (fullscreenBtn) {
     fullscreenBtn.addEventListener("click", toggleFullscreen);
-  } else {
-  }
+  } 
 });
 
+/**
+ * Schaltet zwischen Stummschaltung und Ton an/aus.
+ */
 function toggleMute() {
   isMuted = !isMuted;
   let muteButton = document.getElementById("mute-btn").querySelector("img");
@@ -234,6 +246,9 @@ function toggleMute() {
   muteAllSounds();
 }
 
+/**
+ * Stellt sicher, dass alle Sounds auf die Mute-Einstellung angepasst sind.
+ */
 function muteAllSounds() {
   allGameSounds.forEach((sound) => {
     if (sound) {
@@ -250,6 +265,13 @@ function muteAllSounds() {
   });
 }
 
+/**
+ * Registriert einen Sound und fügt ihn zur globalen Sound-Liste hinzu, 
+ * falls er nicht bereits enthalten ist. Zusätzlich wird der Mute-Status übernommen.
+ *
+ * @param {HTMLAudioElement} sound - Das Sound-Objekt, das registriert werden soll.
+ * @param {boolean} [isStartSound=false] - Gibt an, ob der Sound ein Start-Sound ist.
+ */
 function registerSound(sound, isStartSound = false) {
   if (sound && !allGameSounds.includes(sound)) {
     sound.isStartSound = isStartSound;
@@ -258,6 +280,10 @@ function registerSound(sound, isStartSound = false) {
   }
 }
 
+/**
+ * Wartet darauf, dass das DOM vollständig geladen ist, 
+ * und fügt dann einen Event-Listener zum Mute-Button hinzu.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   let muteBtn = document.getElementById("mute-btn");
   if (muteBtn) {
@@ -266,27 +292,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/**
+ * Startet oder beendet das Spiel pausieren.
+ */
 function togglePause() {
   gamePaused = !gamePaused;
   let pauseScreen = document.getElementById("pause-screen");
   if (gamePaused) {
+    previousMuteState = isMuted;
     isMuted = true;
     muteAllSounds();
     pauseScreen.classList.remove("hidden");
+    world.stopAllMovement();
   } else {
-    isMuted = false;
-    muteAllSounds();
     pauseScreen.classList.add("hidden");
+    world.resumeAllMovement();
+    isMuted = previousMuteState;
+    muteAllSounds();
   }
 }
 
+/**
+ * Setzt das Spiel nach einer Pause fort, indem es den Pausenbildschirm ausblendet,
+ * den Mute-Status wiederherstellt und die Spielbewegungen fortsetzt.
+ */
 function resumeGame() {
   gamePaused = false;
-  isMuted = false;
   document.getElementById("pause-screen").classList.add("hidden");
-  muteAllSounds(false);
+  isMuted = previousMuteState;
+  muteAllSounds();
+  world.resumeAllMovement();
 }
 
+/**
+ * Startet das Spiel neu.
+ */
 function restartGame() {
   world.stopDrawing();
   world = new World(canvas, keyboard);
@@ -294,51 +334,50 @@ function restartGame() {
   location.reload();
 }
 
+/**
+ * Wartet darauf, dass das DOM vollständig geladen ist, 
+ * und fügt Event-Listener zu den Steuerungs-Buttons (Resume, Restart, Pause) hinzu.
+ * Außerdem überprüft es die Bildschirmorientierung und reagiert auf Änderungen.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   let resumeBtn = document.getElementById("resume-btn");
   let restartBtn = document.getElementById("restart-btn");
   let pauseBtn = document.getElementById("pause-btn");
-  if (resumeBtn) {
-    resumeBtn.addEventListener("click", resumeGame);
+  if (resumeBtn) { resumeBtn.addEventListener("click", resumeGame);
   }
-  if (restartBtn) {
-    restartBtn.addEventListener("click", restartGame);
+  if (restartBtn) { restartBtn.addEventListener("click", restartGame);
   }
-  if (pauseBtn) {
-    pauseBtn.addEventListener("click", togglePause);
+  if (pauseBtn) { pauseBtn.addEventListener("click", togglePause);
   }
   checkOrientation();
   window.addEventListener("resize", checkOrientation);
   window.addEventListener("orientationchange", checkOrientation);
 });
 
+/**
+ * Überprüft die Geräteausrichtung und pausiert das Spiel ggf.
+ */
 function checkOrientation() {
   const overlay = document.getElementById("orientation-overlay");
   const pauseScreen = document.getElementById("pause-screen");
   if (!overlay || !pauseScreen) return;
   if (isMobile()) {
-    if (window.innerHeight > window.innerWidth) {
-      overlay.style.display = "flex";
-      if (gameStarted && !gamePaused) {
-        gamePaused = true;
-        isMuted = true;
-        muteAllSounds();
-        pauseScreen.classList.remove("hidden");
+    if (window.innerHeight > window.innerWidth) { overlay.style.display = "flex";
+      if (gameStarted && !gamePaused) { gamePaused = true; isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
       }
-    } else {
-      overlay.style.display = "none";
-      if (gamePaused && gameStarted) {
-        gamePaused = false;
-        isMuted = false;
-        muteAllSounds();
-        pauseScreen.classList.add("hidden");
+    } else { overlay.style.display = "none";
+      if (gamePaused && gameStarted) { gamePaused = false; isMuted = false; muteAllSounds(); pauseScreen.classList.add("hidden");
       }
     }
-  } else {
-    overlay.style.display = "none";
+  } else { overlay.style.display = "none";
   }
 }
 
+/**
+ * Überprüft, ob das aktuelle Gerät ein mobiles Gerät ist.
+ *
+ * @returns {boolean} `true`, wenn das Gerät ein mobiles Gerät ist, sonst `false`.
+ */
 function isMobile() {
   return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
