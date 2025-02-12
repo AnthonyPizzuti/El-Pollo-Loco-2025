@@ -35,25 +35,29 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  offset = {
+    top: 5,
+    left: 5,
+    right: 10,
+    bottom: 10,
+  };
+
   isColliding(mo) {
     if (!mo || mo.isDead) return false;
-    let collision =
-      this.x + this.width > mo.x &&
-      this.y + this.height > mo.y &&
-      this.x < mo.x + mo.width &&
-      this.y < mo.y + mo.height;
-    if (collision) {
-      console.log(
-        `💥 Kollision erkannt: ${this.constructor.name} trifft ${mo.constructor.name} bei (${this.x}, ${this.y})`
-      );
-    }
-    return collision;
+
+    return (
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+      this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+    );
   }
 
   hit() {
     this.energy -= 5;
     if (this.energy < 0) {
       this.energy = 0;
+      gameOver();
     } else {
       this.lastHit = new Date().getTime();
     }
@@ -87,4 +91,11 @@ class MovableObject extends DrawableObject {
   jump() {
     this.speedY = 30;
   }
+
+  setWorld(world) {
+    if (!this.world) {
+        this.world = world;
+        console.log(`🌍 Welt zugewiesen an ${this.constructor.name} bei (${this.x}, ${this.y})`);
+    }
+}
 }

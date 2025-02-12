@@ -13,8 +13,8 @@ class BossBar extends DrawableObject {
   constructor() {
     super();
     this.loadImages(this.IMAGES_BOSS);
-    this.x = 400;
-    this.y = 0;
+    this.x = 500;
+    this.y = 60;
     this.width = 200;
     this.height = 60;
     this.setPercentage(100);
@@ -24,7 +24,7 @@ class BossBar extends DrawableObject {
     this.percentage = Math.max(0, 100 - (hits / 7) * 100);
     let path = this.IMAGES_BOSS[this.resolveImageIndex()];
     this.img = this.imageCache[path];
-}
+  }
 
   resolveImageIndex() {
     if (this.percentage == 100) {

@@ -22,6 +22,7 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.throwableObjects = [];
     this.bottleBar = new BottleBar();
     this.bottleBar.setPercentage(0);
     this.coinBar = new CoinBar();
@@ -30,6 +31,8 @@ class World {
     this.draw();
     this.setWorld();
     this.run();
+    this.assignWorldToEnemies();
+    this.initializeEnemies();
     registerSound(this.hit_Sound);
     registerSound(this.bottle_sound);
     registerSound(this.coin_sound);
@@ -56,6 +59,13 @@ class World {
     );
   }
 
+  setLevel(level) {
+    console.log("♻️ Setze Level zurück...");
+    this.level = level;
+    this.level.enemies = [...level.enemies]; // ✅ Kopiert nur die Originalgegner
+    this.initializeEnemies();
+  }
+
   startGameLoop() {
     if (this.gameLoopActive) return;
     this.gameLoopActive = true;
@@ -69,6 +79,34 @@ class World {
       this.checkWinCondition();
       this.checkGameOver();
     }, 1000 / 60);
+  }
+
+  assignWorldToEnemies() {
+    console.log("🔄 Weisen Gegnern die Welt zu...");
+    if (!this.enemiesAssigned) {
+      // ✅ Verhindert mehrfaches Ausführen
+      this.level.enemies.forEach((enemy) => {
+        if (!enemy.world) {
+          enemy.setWorld(this);
+        }
+      });
+      this.enemiesAssigned = true;
+    }
+  }
+
+  initializeEnemies() {
+    if (!this.level.enemies || this.level.enemies.length === 0) {
+      this.level.enemies = [];
+      this.level.enemies = [
+        new Chicken(this),
+        new Chicken(this),
+        new Chicken(this),
+        new Littlechicken(this),
+        new Littlechicken(this),
+        new Littlechicken(this),
+        new Endboss(),
+      ];
+    }
   }
 
   checkAllSmallEnemiesDead() {
@@ -94,11 +132,11 @@ class World {
 
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
-      if (!enemy.isDead) {
-        if (this.character.isColliding(enemy)) {
-          this.character.hit();
-          this.statusBar.setPercentage(this.character.energy);
-        }
+      if (enemy.isDead) return;
+      if (this.character.isColliding(enemy)) {
+        this.character.hit();
+        console.log(this.character, enemy);
+        this.statusBar.setPercentage(this.character.energy);
       }
     });
   }
@@ -134,6 +172,7 @@ class World {
           } else {
             this.handleChickenCollision(enemy);
           }
+          bottle.hasHitGround = true;
           this.throwableObjects.splice(bottleIndex, 1);
           return;
         }
@@ -158,20 +197,19 @@ class World {
     enemy.hits = (enemy.hits || 0) + 1;
     this.bossBar?.setPercentage(enemy.hits);
     if (enemy.hits === 3) {
-        enemy.img = enemy.imageCache[enemy.IMAGES_HURT[0]];
-        enemy.playAnimation(enemy.IMAGES_HURT);
+      enemy.img = enemy.imageCache[enemy.IMAGES_HURT[0]];
+      enemy.playAnimation(enemy.IMAGES_HURT);
     }
     if (enemy.hits >= 7) {
-        enemy.isDead = true;
-        enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
-        enemy.playAnimation(enemy.IMAGES_DEAD);
-        setTimeout(() => {
-            let i = this.level.enemies.indexOf(enemy);
-            if (i > -1) this.level.enemies.splice(i, 1), this.endboss_sound.pause();
-        }, 1000);
+      enemy.isDead = true;
+      enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
+      enemy.playAnimation(enemy.IMAGES_DEAD);
+      setTimeout(() => {
+        let i = this.level.enemies.indexOf(enemy);
+        if (i > -1) this.level.enemies.splice(i, 1), this.endboss_sound.pause();
+      }, 1000);
     }
-}
-
+  }
 
   collectCoin() {
     this.coins += 1;
@@ -235,6 +273,7 @@ class World {
   }
 
   draw() {
+    if (this.stopped) return;
     requestAnimationFrame(() => this.draw());
     if (gamePaused) {
       return;
@@ -259,7 +298,36 @@ class World {
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.throwableObjects);
-    this.ctx.strokeStyle = "red";
+
+    this.level.enemies.forEach((enemy) => {
+      let isCollidingWithCharacter = this.character.isColliding(enemy);
+
+      // 🔵 Äußere Umrandung (Gesamte Objektgröße)
+      this.ctx.strokeStyle = isCollidingWithCharacter ? "green" : "blue";
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+      // 🔴 Innere Umrandung (angepasste Hitbox)
+      if (enemy.offset) {
+        // ✅ Sicherstellen, dass `offset` existiert
+        this.ctx.strokeStyle = "orange"; // 🔥 Innere Hitbox-Umrandung
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(
+          enemy.x + enemy.offset.left,
+          enemy.y + enemy.offset.top,
+          enemy.width - enemy.offset.right,
+          enemy.height - enemy.offset.bottom
+        );
+      }
+    });
+
+    // 🔥 Überprüfe, ob der Charakter mit einem Gegner kollidiert
+    let isCharacterColliding = this.level.enemies.some((enemy) =>
+      this.character.isColliding(enemy)
+    );
+
+    // 🟥 Äußere Umrandung des Charakters (Standard)
+    this.ctx.strokeStyle = isCharacterColliding ? "yellow" : "red";
     this.ctx.lineWidth = 2;
     this.ctx.strokeRect(
       this.character.x,
@@ -267,14 +335,30 @@ class World {
       this.character.width,
       this.character.height
     );
-    this.level.enemies.forEach((enemy) => {
-      this.ctx.strokeStyle = "blue";
+
+    // 🟠 Innere Umrandung des Charakters (angepasste Hitbox)
+    if (this.character.offset) {
+      // ✅ Sicherstellen, dass `offset` existiert
+      this.ctx.strokeStyle = "purple"; // 🔥 Charakter Innere Hitbox-Umrandung
       this.ctx.lineWidth = 2;
-      this.ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
-    });
+      this.ctx.strokeRect(
+        this.character.x + this.character.offset.left,
+        this.character.y + this.character.offset.top,
+        this.character.width - this.character.offset.right,
+        this.character.height - this.character.offset.bottom
+      );
+    }
+
     this.addObjectsToMap(this.level.coins);
 
     this.ctx.translate(-this.camera_x, 0);
+  }
+
+  stopDrawing() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
   }
 
   addObjectsToMap(objects) {

@@ -34,10 +34,13 @@ function showStartScreen() {
 }
 
 function init() {
-  initLevel();
-  canvas = document.getElementById("canvas");
-  world = new World(canvas, keyboard);
-
+  if (!world) {
+    initLevel();
+    canvas = document.getElementById("canvas");
+    world = new World(canvas, keyboard);
+    world.setLevel(level1);
+  }
+  
   document.getElementById("left-btn").addEventListener("touchstart", () => {
     keyboard.LEFT = true;
   });
@@ -157,6 +160,11 @@ function showWinningScreen() {
     } else {
     }
   }, 1000);
+}
+
+function gameOver() {
+  world.stopDrawing();
+  showGameOverScreen();
 }
 
 function showGameOverScreen() {
@@ -280,6 +288,9 @@ function resumeGame() {
 }
 
 function restartGame() {
+  world.stopDrawing();
+  world = new World(canvas, keyboard);
+  world.setLevel(level1);
   location.reload();
 }
 
