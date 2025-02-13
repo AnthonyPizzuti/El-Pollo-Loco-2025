@@ -55,6 +55,6 @@ class WinningScreen {
    */
   playWinMusic() {
     this.winSound.play().catch(() => {});
-    this.winSound.volume = 0.3;
+    this.winSound.volume = 0.2;
   }
 }

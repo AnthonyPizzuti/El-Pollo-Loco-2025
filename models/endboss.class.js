@@ -9,6 +9,7 @@ class Endboss extends MovableObject {
   y = 45;
   isDead = false;
 
+
   /**
    * Offset für die Hitbox des Endbosses.
    * @type {{top: number, bottom: number, left: number, right: number}}
@@ -101,6 +102,10 @@ class Endboss extends MovableObject {
     this.x = 1800 + Math.random() * 500;
     this.speed = 5;
     this.animate();
+    this.endboss_sound = new Audio("audio/endboss.mp3");
+    this.endboss_sound.volume = 0.2;
+    this.endboss_sound.loop = true;
+
   }
 
   /**
@@ -127,4 +132,43 @@ class Endboss extends MovableObject {
     }, 5000);
     intervalIds.push(walkInterval, stateChangeInterval, attackInterval);
   }
+
+  /**
+ * Handles the death of the entity.
+ * - Prevents multiple executions if already dead.
+ * - Stops all movement and attack intervals.
+ * - Plays the death animation for 2 seconds.
+ * - Removes the entity from the world after the animation.
+ */
+  die() {
+    if (this.isDead) return;
+    this.isDead = true;
+    if (this.endboss_sound) {
+        this.endboss_sound.pause();
+        this.endboss_sound.currentTime = 0;
+    }
+    clearInterval(this.walkInterval);
+    clearInterval(this.stateChangeInterval);
+    clearInterval(this.attackInterval);
+    let deathAnimationInterval = setInterval(() => {
+        this.playAnimation(this.IMAGES_DEAD);
+    }, 200);
+    setTimeout(() => {
+        clearInterval(deathAnimationInterval);
+        this.removeFromWorld();
+    }, 2000);
+}
+
+/**
+ * Removes the entity from the world's enemy list.
+ * Ensures that the entity is properly deleted from the game upon death.
+ */
+removeFromWorld() {
+    if (this.world && this.world.level && this.world.level.enemies) {
+        let index = this.world.level.enemies.indexOf(this);
+        if (index > -1) {
+            this.world.level.enemies.splice(index, 1);
+        }
+    }
+}
 }

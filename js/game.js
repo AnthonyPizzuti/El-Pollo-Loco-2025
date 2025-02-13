@@ -17,6 +17,8 @@ let isMuted = false;
 let allGameSounds = [];
 let gamePaused = false;
 let pausedIntervals = [];
+let backgroundMusic = new Audio("audio/backgroud-music.mp3");
+let startMusic = new Audio("audio/startmusic.mp3");
 
 /**
  * Zeigt den Startbildschirm an und startet das Spiel bei Klick auf "Play".
@@ -49,37 +51,40 @@ function init() {
     canvas = document.getElementById("canvas");
     world = new World(canvas, keyboard);
     world.setLevel(level1);
+    if (startMusic) {
+      startMusic.pause();
+      startMusic.currentTime = 0;
+    }
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 0.05;
+    if (!isMuted) backgroundMusic.play();
   }
 
   /**
- * Fügt Event-Listener für die Touch-Steuerung hinzu.
- */
-  document.getElementById("left-btn").addEventListener("touchstart", () => {
-    keyboard.LEFT = true;
-  });
-  document.getElementById("left-btn").addEventListener("touchend", () => {
-    keyboard.LEFT = false;
-  });
-
-  document.getElementById("right-btn").addEventListener("touchstart", () => {
-    keyboard.RIGHT = true;
-  });
-  document.getElementById("right-btn").addEventListener("touchend", () => {
-    keyboard.RIGHT = false;
+   * Fügt Event-Listener für die Touch-Steuerung hinzu.
+   */
+  document.getElementById("left-btn").addEventListener("touchstart", (event) => { event.preventDefault();
+      keyboard.LEFT = true;
+    });
+  document.getElementById("left-btn").addEventListener("touchend", () => { keyboard.LEFT = false;
   });
 
-  document.getElementById("jump-btn").addEventListener("touchstart", () => {
-    keyboard.SPACE = true;
-  });
-  document.getElementById("jump-btn").addEventListener("touchend", () => {
-    keyboard.SPACE = false;
+  document.getElementById("right-btn").addEventListener("touchstart", (event) => { event.preventDefault();
+      keyboard.RIGHT = true;
+    });
+  document.getElementById("right-btn").addEventListener("touchend", () => { keyboard.RIGHT = false;
   });
 
-  document.getElementById("throw-btn").addEventListener("touchstart", () => {
-    keyboard.D = true;
+  document.getElementById("jump-btn").addEventListener("touchstart", (event) => { event.preventDefault();
+      keyboard.SPACE = true;
+    });
+  document.getElementById("jump-btn").addEventListener("touchend", () => { keyboard.SPACE = false;
   });
-  document.getElementById("throw-btn").addEventListener("touchend", () => {
-    keyboard.D = false;
+
+  document.getElementById("throw-btn").addEventListener("touchstart", (event) => { event.preventDefault();
+      keyboard.D = true;
+    });
+  document.getElementById("throw-btn").addEventListener("touchend", () => { keyboard.D = false;
   });
 }
 
@@ -125,13 +130,35 @@ document.addEventListener("keyup", (e) => {
 });
 
 /**
+ * Startet die Hintergrundmusik, wenn das Spiel beginnt.
+ */
+function playBackgroundMusic() {
+  if (!isMuted && gameStarted) {
+    backgroundMusic.play().catch()};
+}
+
+/**
+ * Stellt sicher, dass die Musik stummgeschaltet wird, wenn das Spiel auf "Mute" ist.
+ */
+function updateBackgroundMusic() {
+  backgroundMusic.muted = isMuted;
+  if (!isMuted) { backgroundMusic.play();
+  } else { backgroundMusic.pause();
+  }
+}
+
+/**
+ * Registriere den Hintergrundsound, damit er von der Mute-Funktion berücksichtigt wird.
+ */
+registerSound(backgroundMusic, true);
+
+/**
  * Schließt das Impressum und kehrt zum Spiel zurück.
  */
 function closeImpressum() {
   if (window.opener) {
     window.close();
-  } else {
-    window.location.href = "index.html";
+  } else { window.location.href = "index.html";
   }
 }
 
@@ -161,9 +188,13 @@ function restartIntervals() {
  * Zeigt den Gewinnbildschirm an.
  */
 function showWinningScreen() {
-    let winningScreen = new WinningScreen("restartButton");
-    setTimeout(() => {}, 1000);
-  }
+    if (world && world.endboss_sound) {
+        world.endboss_sound.pause();
+        world.endboss_sound.currentTime = 0;
+    }
+  let winningScreen = new WinningScreen("restartButton");
+  setTimeout(() => {}, 1000);
+}
 
 /**
  * Zeigt den Game-Over-Bildschirm an und stoppt das Zeichnen.
@@ -177,35 +208,30 @@ function gameOver() {
  * Zeigt den Game-Over-Bildschirm an.
  */
 function showGameOverScreen() {
-    let gameOverScreen = new GameOverScreen("restartButton");
-    setTimeout(() => {}, 1000);
-  }
+  let gameOverScreen = new GameOverScreen("restartButton");
+  setTimeout(() => {}, 1000);
+}
 
-  /**
+/**
  * Schaltet zwischen Vollbild- und Fenstermodus.
  */
-  function toggleFullscreen() {
-    let container = document.getElementById("game-container");
-    if (!document.fullscreenElement) {
-      container.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
-    }
+function toggleFullscreen() {
+  let container = document.getElementById("game-container");
+  if (!document.fullscreenElement) { container.requestFullscreen?.();
+  } else { document.exitFullscreen?.();
   }
+}
 
-  /**
+/**
  * Aktiviert den Vollbildmodus für das angegebene HTML-Element.
  * Unterstützt verschiedene Browser-spezifische Methoden für Fullscreen.
  *
  * @param {HTMLElement} element - Das HTML-Element, das in den Vollbildmodus gesetzt werden soll.
  */
 function enterFullscreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
+  if (element.requestFullscreen) { element.requestFullscreen();
+  } else if (element.msRequestFullscreen) { element.msRequestFullscreen();
+  } else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen();
   }
 }
 
@@ -214,51 +240,48 @@ function enterFullscreen(element) {
  * Unterstützt verschiedene Browser-spezifische Methoden zum Verlassen des Fullscreen-Modus.
  */
 function exitFullscreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
+  if (document.exitFullscreen) { document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) { document.webkitExitFullscreen();
   }
 }
 
 /**
- * Wartet darauf, dass das DOM vollständig geladen ist, 
+ * Wartet darauf, dass das DOM vollständig geladen ist,
  * und fügt dann einen Event-Listener zum Fullscreen-Button hinzu.
  */
 document.addEventListener("DOMContentLoaded", () => {
   let fullscreenBtn = document.getElementById("fullscreen-btn");
-  if (fullscreenBtn) {
-    fullscreenBtn.addEventListener("click", toggleFullscreen);
-  } 
+  if (fullscreenBtn) { fullscreenBtn.addEventListener("click", toggleFullscreen);
+  }
 });
 
 /**
  * Schaltet zwischen Stummschaltung und Ton an/aus.
  */
 function toggleMute() {
-  isMuted = !isMuted;
-  let muteButton = document.getElementById("mute-btn").querySelector("img");
-  if (isMuted) {
-    muteButton.src = "./img/controll/mute.png";
-  } else {
-    muteButton.src = "./img/controll/ton.png";
+    isMuted = !isMuted;
+    document.getElementById("mute-btn").querySelector("img").src = 
+      isMuted ? "./img/controll/mute.png" : "./img/controll/ton.png";
+    muteAllSounds();
+    if (!gameStarted && startMusic) { startMusic.muted = isMuted;
+      if (!isMuted && startMusic.paused) startMusic.volume = 0.5, startMusic.play();
+    } else { startMusic?.pause(), startMusic.currentTime = 0;
+      if (backgroundMusic) {
+        backgroundMusic.muted = isMuted;
+        if (!isMuted && backgroundMusic.paused) backgroundMusic.volume = 0.05, backgroundMusic.play();
+      }
+    }
   }
-  muteAllSounds();
-}
 
 /**
  * Stellt sicher, dass alle Sounds auf die Mute-Einstellung angepasst sind.
  */
 function muteAllSounds() {
   allGameSounds.forEach((sound) => {
-    if (sound) {
-      if (isMuted) {
-        sound.muted = true;
+    if (sound) { if (isMuted) { sound.muted = true;
         sound.pause();
-      } else {
-        sound.muted = false;
-        if (sound.loop && !sound.isStartSound) {
-          sound.play().catch(() => {});
+      } else { sound.muted = false;
+        if (sound.loop && !sound.isStartSound) { sound.play().catch(() => {});
         }
       }
     }
@@ -266,28 +289,26 @@ function muteAllSounds() {
 }
 
 /**
- * Registriert einen Sound und fügt ihn zur globalen Sound-Liste hinzu, 
+ * Registriert einen Sound und fügt ihn zur globalen Sound-Liste hinzu,
  * falls er nicht bereits enthalten ist. Zusätzlich wird der Mute-Status übernommen.
  *
  * @param {HTMLAudioElement} sound - Das Sound-Objekt, das registriert werden soll.
  * @param {boolean} [isStartSound=false] - Gibt an, ob der Sound ein Start-Sound ist.
  */
 function registerSound(sound, isStartSound = false) {
-  if (sound && !allGameSounds.includes(sound)) {
-    sound.isStartSound = isStartSound;
+  if (sound && !allGameSounds.includes(sound)) { sound.isStartSound = isStartSound;
     sound.muted = isMuted;
     allGameSounds.push(sound);
   }
 }
 
 /**
- * Wartet darauf, dass das DOM vollständig geladen ist, 
+ * Wartet darauf, dass das DOM vollständig geladen ist,
  * und fügt dann einen Event-Listener zum Mute-Button hinzu.
  */
 document.addEventListener("DOMContentLoaded", () => {
   let muteBtn = document.getElementById("mute-btn");
-  if (muteBtn) {
-    muteBtn.addEventListener("click", toggleMute);
+  if (muteBtn) { muteBtn.addEventListener("click", toggleMute);
   } else {
   }
 });
@@ -298,17 +319,16 @@ document.addEventListener("DOMContentLoaded", () => {
 function togglePause() {
   gamePaused = !gamePaused;
   let pauseScreen = document.getElementById("pause-screen");
-  if (gamePaused) {
-    previousMuteState = isMuted;
+  if (gamePaused) { previousMuteState = isMuted;
     isMuted = true;
     muteAllSounds();
     pauseScreen.classList.remove("hidden");
     world.stopAllMovement();
-  } else {
-    pauseScreen.classList.add("hidden");
+  } else { pauseScreen.classList.add("hidden");
     world.resumeAllMovement();
     isMuted = previousMuteState;
     muteAllSounds();
+    updateBackgroundMusic();
   }
 }
 
@@ -322,6 +342,7 @@ function resumeGame() {
   isMuted = previousMuteState;
   muteAllSounds();
   world.resumeAllMovement();
+  updateBackgroundMusic();
 }
 
 /**
@@ -335,7 +356,7 @@ function restartGame() {
 }
 
 /**
- * Wartet darauf, dass das DOM vollständig geladen ist, 
+ * Wartet darauf, dass das DOM vollständig geladen ist,
  * und fügt Event-Listener zu den Steuerungs-Buttons (Resume, Restart, Pause) hinzu.
  * Außerdem überprüft es die Bildschirmorientierung und reagiert auf Änderungen.
  */
@@ -361,8 +382,7 @@ function checkOrientation() {
   const overlay = document.getElementById("orientation-overlay");
   const pauseScreen = document.getElementById("pause-screen");
   if (!overlay || !pauseScreen) return;
-  if (isMobile()) {
-    if (window.innerHeight > window.innerWidth) { overlay.style.display = "flex";
+  if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.style.display = "flex";
       if (gameStarted && !gamePaused) { gamePaused = true; isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
       }
     } else { overlay.style.display = "none";

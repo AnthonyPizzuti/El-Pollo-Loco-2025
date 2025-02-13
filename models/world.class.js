@@ -16,6 +16,8 @@ class World {
   bottle_sound = new Audio("audio/glass.mp3");
   coin_sound = new Audio("audio/coin.mp3");
   endboss_sound = new Audio("audio/endboss.mp3");
+  endboss_attack_sound = new Audio("audio/endboss-attack.mp3");
+  backgroundMusic = new Audio("audio/backgroud-music.mp3");
   endbossSpawned = false;
   winScreenDisplayed = false;
   gameOverDisplayed = false;
@@ -30,13 +32,13 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.rendering = new Rendering(this);
     this.throwableObjects = [];
     this.bottleBar = new BottleBar();
     this.bottleBar.setPercentage(0);
     this.coinBar = new CoinBar();
     this.coinBar.setPercentage(0);
     this.spawnBottle();
-    this.draw();
     this.setWorld();
     this.run();
     this.assignWorldToEnemies();
@@ -45,6 +47,8 @@ class World {
     registerSound(this.bottle_sound);
     registerSound(this.coin_sound);
     registerSound(this.endboss_sound);
+    registerSound(this.backgroundMusic);
+    registerSound(this.endboss_attack_sound);
   }
 
   /**
@@ -61,11 +65,9 @@ class World {
     intervalIds.push(
       setInterval(() => {
         if (gamePaused) return;
-        this.checkCollision();
         this.throwBottle();
         this.checkCollisionCoin();
         this.checkCollisionBottle();
-        this.checkBottleEnemyCollision();
         this.checkAllSmallEnemiesDead();
         this.checkWinCondition();
         this.checkGameOver();
@@ -84,19 +86,21 @@ class World {
   }
 
   /**
- * Startet die Hauptspiel-Schleife, falls sie nicht bereits aktiv ist.
- * Die Schleife überprüft in regelmäßigen Abständen verschiedene Spielzustände 
- * wie Kollisionen, das Werfen von Flaschen und Sieg- oder Niederlagenbedingungen.
- */
+   * Startet die Hauptspiel-Schleife, falls sie nicht bereits aktiv ist.
+   * Die Schleife überprüft in regelmäßigen Abständen verschiedene Spielzustände
+   * wie Kollisionen, das Werfen von Flaschen und Sieg- oder Niederlagenbedingungen.
+   */
   startGameLoop() {
     if (this.gameLoopActive) return;
     this.gameLoopActive = true;
     this.gameLoop = setInterval(() => {
-      this.checkCollision();
+      this.rendering.draw();
+      this.checkBottleEnemyCollision();
+      this.checkJumpOnEnemy();
+      this.checkColliding();
       this.throwBottle();
       this.checkCollisionCoin();
       this.checkCollisionBottle();
-      this.checkBottleEnemyCollision();
       this.checkAllSmallEnemiesDead();
       this.checkWinCondition();
       this.checkGameOver();
@@ -138,7 +142,8 @@ class World {
   assignWorldToEnemies() {
     if (!this.enemiesAssigned) {
       this.level.enemies.forEach((enemy) => {
-        if (!enemy.world) { enemy.setWorld(this);
+        if (!enemy.world) {
+          enemy.setWorld(this);
         }
       });
       this.enemiesAssigned = true;
@@ -168,10 +173,10 @@ class World {
    */
   checkAllSmallEnemiesDead() {
     const remainingSmallEnemies = this.level.enemies.filter(
-      (enemy) => (enemy instanceof Chicken || enemy instanceof Littlechicken) &&
-        !enemy.isDead
+      (enemy) => (enemy instanceof Chicken || enemy instanceof Littlechicken) && !enemy.isDead
     );
-    if (remainingSmallEnemies.length === 0 && !this.endbossSpawned) { this.spawnEndboss();
+    if (remainingSmallEnemies.length === 0 && !this.endbossSpawned) {
+      this.spawnEndboss();
     }
   }
 
@@ -182,30 +187,78 @@ class World {
     const endboss = new Endboss();
     this.level.enemies.push(endboss);
     this.endbossSpawned = true;
+    if (backgroundMusic) {
+      backgroundMusic.pause();
+    }
     this.endboss_sound.play();
-    this.endboss_sound.volume = 0.3;
+    this.endboss_sound.volume = 0.2;
     this.endboss_sound.loop = true;
     this.bossBar = new BossBar();
   }
 
   /**
-   * Checks for collision between the character and enemies.
-   */
-  checkCollision() {
-    this.level.enemies.forEach((enemy) => {
-      if (enemy.isDead) return;
-      if (this.character.isColliding(enemy)) { this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
+ * Prüft, ob eine geworfene Flasche einen Gegner trifft.
+ *
+ * @returns {void}
+ */
+checkBottleEnemyCollision() {
+    this.throwableObjects.forEach((bottle, bottleIndex) => { if (bottle.hasHitGround) return;
+      for (let i = 0; i < this.level.enemies.length; i++) { const enemy = this.level.enemies[i];
+        if (!enemy.isDead && bottle.isColliding(enemy)) { enemy.hitByBottle = true;
+          if (enemy instanceof Endboss) { this.handleEndbossCollision(enemy);
+          } else { this.handleChickenCollision(enemy);
+          }
+          bottle.hasHitGround = true;
+          this.throwableObjects.splice(bottleIndex, 1);
+          return;
+        }
       }
     });
   }
-
+  
+  /**
+ * Prüft, ob der Charakter auf einen Gegner springt.
+ *
+ * @returns {void}
+ */
+  checkJumpOnEnemy() {
+    this.level.enemies.forEach((enemy) => {
+      if (enemy.isDead || enemy.hitByBottle) return;
+      if (this.character.isColliding(enemy)) { const isJumpCollision = this.character.speedY < -5 &&
+          (this.character.y + this.character.height - this.character.offset.bottom < enemy.y + enemy.offset.top + (enemy instanceof Littlechicken ? enemy.height : enemy.height * 0.6));
+        if (isJumpCollision) { this.character.speedY = 15;
+          this.character.isJumping = false;
+          if (enemy instanceof Endboss) { this.handleEndbossCollision(enemy);
+          } else { this.handleChickenCollision(enemy);
+          }
+        }
+      }
+    });
+  }
+  
+  /**
+ * Prüft, ob es zu einer normalen (frontalen) Kollision zwischen dem Charakter und einem Gegner kommt.
+ *
+ * @returns {void}
+ */
+  checkColliding() {
+    this.level.enemies.forEach((enemy) => { if (enemy.isDead || enemy.hitByBottle) return;
+      if (this.character.isColliding(enemy)) { const isJumpCollision = this.character.speedY < -5 &&
+          (this.character.y + this.character.height - this.character.offset.bottom < enemy.y + enemy.offset.top + (enemy instanceof Littlechicken ? enemy.height : enemy.height * 0.6));
+        if (!isJumpCollision) { this.character.hit();
+          this.statusBar.setPercentage(this.character.energy);
+        }
+      }
+    });
+  }
+  
   /**
    * Checks for collision between the character and bottles.
    */
   checkCollisionBottle() {
     this.level.bottles.forEach((bottle, index) => {
-      if (this.character.isColliding(bottle)) { this.bottle_sound.play();
+      if (this.character.isColliding(bottle)) {
+        this.bottle_sound.play();
         this.level.bottles.splice(index, 1);
         this.character.collectBottle();
       }
@@ -217,27 +270,10 @@ class World {
    */
   checkCollisionCoin() {
     this.level.coins.forEach((coin, index) => {
-      if (this.character.isColliding(coin)) { this.coin_sound.play();
+      if (this.character.isColliding(coin)) {
+        this.coin_sound.play();
         this.level.coins.splice(index, 1);
         this.character.collectCoin();
-      }
-    });
-  }
-
-  /**
-   * Checks for collision between throwable objects and enemies.
-   */
-  checkBottleEnemyCollision() {
-    this.throwableObjects.forEach((bottle, bottleIndex) => {
-      if (bottle.hasHitGround) return;
-      for (let i = 0; i < this.level.enemies.length; i++) { let enemy = this.level.enemies[i];
-        if (!enemy.isDead && bottle.isColliding(enemy)) { if (enemy instanceof Endboss) { this.handleEndbossCollision(enemy);
-          } else { this.handleChickenCollision(enemy);
-          }
-          bottle.hasHitGround = true;
-          this.throwableObjects.splice(bottleIndex, 1);
-          return;
-        }
       }
     });
   }
@@ -247,7 +283,8 @@ class World {
    * @param {Object} enemy - The enemy object.
    */
   handleChickenCollision(enemy) {
-    if (!enemy.isDead) { enemy.isDead = true;
+    if (!enemy.isDead) {
+      enemy.isDead = true;
       enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
       setTimeout(() => { const index = this.level.enemies.indexOf(enemy);
         if (index > -1) { this.level.enemies.splice(index, 1);
@@ -263,21 +300,19 @@ class World {
   handleEndbossCollision(enemy) {
     enemy.hits = (enemy.hits || 0) + 1;
     this.bossBar?.setPercentage(enemy.hits);
-    if (enemy.hits === 3) { enemy.img = enemy.imageCache[enemy.IMAGES_HURT[0]];
-      enemy.playAnimation(enemy.IMAGES_HURT);
+    this.endboss_attack_sound.volume = 0.6;
+    this.endboss_attack_sound.play();
+    if (enemy.hits === 3) { enemy.playAnimation(enemy.IMAGES_HURT);
     }
-    if (enemy.hits >= 5) { enemy.isDead = true;
-      enemy.img = enemy.imageCache[enemy.IMAGES_DEAD[0]];
-      enemy.playAnimation(enemy.IMAGES_DEAD);
-      setTimeout(() => { let i = this.level.enemies.indexOf(enemy);
-      if (i > -1) this.level.enemies.splice(i, 1), this.endboss_sound.pause();
-      }, 1000);
+    if (enemy.hits >= 5) { enemy.die();
+      setTimeout(() => { this.checkWinCondition();
+      }, 3000);
     }
   }
 
   /**
- * Erhöht die Anzahl gesammelter Münzen und aktualisiert die Münzleiste.
- */
+   * Erhöht die Anzahl gesammelter Münzen und aktualisiert die Münzleiste.
+   */
   collectCoin() {
     this.coins += 1;
     const percentage = Math.min((this.coins / this.totalCoins) * 100, 100);
@@ -285,8 +320,8 @@ class World {
   }
 
   /**
- * Erhöht die Anzahl gesammelter Flaschen und aktualisiert die Flaschenleiste.
- */
+   * Erhöht die Anzahl gesammelter Flaschen und aktualisiert die Flaschenleiste.
+   */
   collectBottle() {
     this.bottles += 1;
     const percentage = Math.min((this.bottles / this.totalBottles) * 100, 100);
@@ -294,8 +329,8 @@ class World {
   }
 
   /**
- * Prüft, ob der Spieler eine Flasche werfen kann und fügt eine geworfene Flasche hinzu.
- */
+   * Prüft, ob der Spieler eine Flasche werfen kann und fügt eine geworfene Flasche hinzu.
+   */
   throwBottle() {
     if (this.keyboard && this.keyboard.D && this.character.bottles > 0) {
       this.character.throwBottle();
@@ -305,10 +340,10 @@ class World {
   }
 
   /**
- * Erstellt in regelmäßigen Abständen neue Flaschen an zufälligen Positionen im Level.
- */
+   * Erstellt in regelmäßigen Abständen neue Flaschen an zufälligen Positionen im Level.
+   */
   spawnBottle() {
-    intervalIds.push( setInterval(() => {
+    intervalIds.push(setInterval(() => {
         const randomX = 100 + Math.random() * 500;
         const newBottle = new Bottle(randomX);
         this.level.bottles.push(newBottle);
@@ -317,30 +352,30 @@ class World {
   }
 
   /**
- * Überprüft, ob alle Gegner besiegt wurden. Falls ja, stoppt das Spiel
- * und zeigt den Gewinnbildschirm an.
- */
+   * Überprüft, ob alle Gegner besiegt wurden. Falls ja, stoppt das Spiel
+   * und zeigt den Gewinnbildschirm an.
+   */
   checkWinCondition() {
     const remainingEnemies = this.level.enemies.filter((enemy) => !enemy.isDead);
-    if (remainingEnemies.length === 0 && !winScreenDisplayed) {
-      winScreenDisplayed = true;
+    if (remainingEnemies.length === 0 && !winScreenDisplayed) { winScreenDisplayed = true;
       stopAllIntervals();
       let drawLoopId = requestAnimationFrame(() => {});
       cancelAnimationFrame(drawLoopId);
-      document.getElementById("canvas").remove();
-      document.getElementById("game-controls").remove();
-      setTimeout(() => { showWinningScreen();
-      }, 100);
+      setTimeout(() => { document.getElementById("canvas").remove(); document.getElementById("game-controls").remove();
+      showWinningScreen();
+      }, 3000);
     }
   }
 
   /**
- * Überprüft, ob der Spieler kein Leben mehr hat. Falls ja, wird das Spiel
- * gestoppt und der Game-Over-Bildschirm angezeigt.
- */
+   * Überprüft, ob der Spieler kein Leben mehr hat. Falls ja, wird das Spiel
+   * gestoppt und der Game-Over-Bildschirm angezeigt.
+   */
   checkGameOver() {
-    if (this.character.energy <= 0 && !this.gameOverDisplayed) {
-      this.gameOverDisplayed = true;
+    if (this.character.energy <= 0 && !this.gameOverDisplayed) { this.gameOverDisplayed = true;
+        if (backgroundMusic) { backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+    }
       stopAllIntervals();
       let drawLoopId = requestAnimationFrame(() => {});
       cancelAnimationFrame(drawLoopId);
@@ -352,90 +387,10 @@ class World {
   }
 
   /**
-   * Zeichnet alle Spielobjekte auf das Canvas und aktualisiert den Frame.
-   * Falls das Spiel pausiert oder gestoppt ist, wird das Zeichnen unterbrochen.
-   */
-  draw() {
-    if (this.stopped) return;
-    requestAnimationFrame(() => this.draw());
-    if (gamePaused) {
-    return;
-    }
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.backgroundObject);
-    this.ctx.translate(-this.camera_x, 0);
-    // ------ Space for fixed objects ------ //
-    this.addToMap(this.statusBar);
-    this.addToMap(this.bottleBar);
-    this.addToMap(this.coinBar);
-    if (this.bossBar) {
-      this.addToMap(this.bossBar);
-    }
-    this.ctx.translate(this.camera_x, 0);
-    this.addToMap(this.character);
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.level.bottles);
-    this.addObjectsToMap(this.throwableObjects);
-    this.addObjectsToMap(this.level.coins);
-    this.ctx.translate(-this.camera_x, 0);
-  }
-
-  /**
-   * Stops the rendering loop of the game.
+   * Stops the drawing loop by setting the stopped flag to true.
+   * This prevents the game from continuously rendering new frames.
    */
   stopDrawing() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-  }
-
-  /**
-   * Fügt eine Liste von Objekten zur Karte hinzu.
-   * @param {Array<Object>} objects - Eine Liste von Objekten, die zur Karte hinzugefügt werden sollen.
-   */
-  addObjectsToMap(objects) {
-    objects.forEach((o) => {
-      this.addToMap(o);
-    });
-  }
-
-  /**
-   * Fügt ein einzelnes Objekt zur Karte hinzu und behandelt das Zeichnen, einschließlich Spiegelung.
-   * @param {Object} mo - Das darzustellende Objekt.
-   */
-  addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
-    }
-
-    mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
-
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
-    }
-  }
-
-  /**
-   * Spiegelt das Objekt horizontal, indem die Zeichenfläche entsprechend transformiert wird.
-   * @param {Object} mo - Das zu spiegelnde Objekt.
-   */
-  flipImage(mo) {
-    this.ctx.save();
-    this.ctx.translate(mo.width, 0);
-    this.ctx.scale(-1, 1);
-    mo.x = mo.x * -1;
-  }
-
-  /**
-   * Stellt das gespiegelte Objekt wieder zurück in seine ursprüngliche Position.
-   * @param {Object} mo - Das Objekt, das zurückgesetzt wird.
-   */
-  flipImageBack(mo) {
-    mo.x = mo.x * -1;
-    this.ctx.restore();
+    this.stopped = true;
   }
 }

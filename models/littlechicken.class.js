@@ -13,8 +13,8 @@ class Littlechicken extends MovableObject {
    * @type {{top: number, bottom: number, left: number, right: number}}
    */
   offset = {
-    top: 5,
-    bottom: 10,
+    top: -30,
+    bottom: 5,
     left: 5,
     right: 5,
   };
@@ -61,26 +61,21 @@ class Littlechicken extends MovableObject {
    */
   animate() {
     let movementInterval = setInterval(() => {
-      if (!this.isDead) {
-        this.moveLeft();
-        if (!this.chicken_sound.playing) {
-          this.chicken_sound.play();
+      if (!this.isDead) { this.moveLeft();
+        if (!this.chicken_sound.playing) { this.chicken_sound.play();
         }
         this.chicken_sound.volume = 0.05;
-      } else {
-        this.chicken_sound.pause();
+      } else { this.chicken_sound.pause();
       }
     }, 1000 / 60);
     let animationInterval = setInterval(() => {
       if (this.isDead) {
         this.playAnimation(this.IMAGES_DEAD);
-        if (!this.deadSoundPlayed) {
-          this.chicken_dead_sound.play();
+        if (!this.deadSoundPlayed) { this.chicken_dead_sound.play();
           this.deadSoundPlayed = true;
           this.chicken_sound.pause();
         }
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
+      } else { this.playAnimation(this.IMAGES_WALKING);
       }
     }, 50);
     intervalIds.push(movementInterval, animationInterval);
