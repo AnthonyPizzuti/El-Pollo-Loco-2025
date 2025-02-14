@@ -306,6 +306,7 @@ checkLanding() {
       bottle.speedX = this.otherDirection ? -5 : 5;
       bottle.applyGravity();
       this.world.throwableObjects.push(bottle);
+      setTimeout(() => {this.canThrow = true;}, 500);
     }
   }
   

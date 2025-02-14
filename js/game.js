@@ -39,6 +39,7 @@ function showStartScreen() {
     pauseBtn.style.pointerEvents = "auto";
     document.getElementById("instructions-btn").style.display = "none";
     document.getElementById("game-controls").classList.remove("hidden");
+    document.getElementById("game-controls").style.display = "flex";
     init();
   });
 }
@@ -355,18 +356,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtn = document.getElementById("close-modal");
   if (instructionsBtn && instructionsModal) { instructionsBtn.addEventListener("click", () => { instructionsModal.classList.remove("hidden");
     });
-  }
-  if (closeModalBtn && instructionsModal) { closeModalBtn.addEventListener("click", () => { instructionsModal.classList.add("hidden");
+  } if (closeModalBtn && instructionsModal) { closeModalBtn.addEventListener("click", () => { instructionsModal.classList.add("hidden");
     });
   }
   let resumeBtn = document.getElementById("resume-btn");
   let restartBtn = document.getElementById("restart-btn");
   let pauseBtn = document.getElementById("pause-btn");
   if (resumeBtn) { resumeBtn.addEventListener("click", resumeGame);
-  }
-  if (restartBtn) { restartBtn.addEventListener("click", restartGame);
-  }
-  if (pauseBtn) { pauseBtn.addEventListener("click", togglePause);
+  } if (restartBtn) { restartBtn.addEventListener("click", restartGame);
+  } if (pauseBtn) { pauseBtn.addEventListener("click", togglePause);
   }
   checkOrientation();
   window.addEventListener("resize", checkOrientation);

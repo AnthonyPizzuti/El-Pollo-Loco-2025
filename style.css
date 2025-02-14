@@ -426,9 +426,14 @@ canvas {
   display: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media only screen and (max-width: 1024px) {
   #game-controls {
-    display: none !important;
+    display: none;
+    justify-content: space-between;
+    bottom: 10px;
+    width: 95%;
+    position: absolute;
+    padding-left: 15px;
   }
 }
 
@@ -448,13 +453,6 @@ canvas {
   #game-container {
     width: 100%;
     height: auto;
-  }
-
-  #game-controls {
-    display: flex !important;
-    justify-content: center;
-    bottom: 10px;
-    width: 95%;
   }
 
   .control-btn img {
