@@ -65,6 +65,9 @@ class World {
     intervalIds.push(
       setInterval(() => {
         if (gamePaused) return;
+        this.checkBottleEnemyCollision();
+        this.checkJumpOnEnemy();
+        this.checkColliding();
         this.throwBottle();
         this.checkCollisionCoin();
         this.checkCollisionBottle();
@@ -95,9 +98,6 @@ class World {
     this.gameLoopActive = true;
     this.gameLoop = setInterval(() => {
       this.rendering.draw();
-      this.checkBottleEnemyCollision();
-      this.checkJumpOnEnemy();
-      this.checkColliding();
       this.throwBottle();
       this.checkCollisionCoin();
       this.checkCollisionBottle();

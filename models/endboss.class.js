@@ -99,7 +99,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_WALK);
     this.loadImages(this.IMAGES_ATTACK);
-    this.x = 1800 + Math.random() * 500;
+    this.x = 2500 + Math.random() * 500;
     this.speed = 5;
     this.animate();
     this.endboss_sound = new Audio("audio/endboss.mp3");
