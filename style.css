@@ -45,10 +45,13 @@ h1 {
 }
 
 canvas {
-  background-color: black;
-  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  background-color: black;
+  display: block;
 }
 
 #playButton {
@@ -59,7 +62,6 @@ canvas {
   padding: 15px 30px;
   font-size: 48px;
   background-color: #ffa400;
-  color: black;
   border-radius: 8px;
   font-family: "zabars", Arial, Helvetica, sans-serif;
   cursor: pointer;
@@ -71,23 +73,20 @@ canvas {
 }
 
 .controls.hidden {
-  display: none !important;
-}
-
-.hidden {
   display: none;
 }
 
-#game-controls {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  pointer-events: auto;
+.hidden {
+  display: none !important;
+}
+
+#game-container {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 720 / 480;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .control-btn {
@@ -198,7 +197,8 @@ canvas {
 #fullscreen-btn img,
 #mute-btn img,
 #pause-btn img,
-#impressum-icon img {
+#impressum-icon img,
+#instructions-btn {
   width: 40px;
   height: 40px;
 }
@@ -249,7 +249,6 @@ canvas {
 }
 
 #orientation-overlay {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -267,30 +266,22 @@ canvas {
   z-index: 9999;
 }
 
+#orientation-overlay.hidden {
+  display: none !important;
+}
+
 #orientation-overlay p {
   max-width: 80%;
   text-align: center;
   line-height: 1.5;
 }
 
-#how-to-play {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  color: rgb(0, 0, 0);
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 18px;
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-  flex-wrap: nowrap;
-}
-
 #how-to-play h2 {
   font-size: 24px;
   font-family: "Comic Sans MS", "Comic Sans", cursive;
   white-space: nowrap;
+  color: #aeca54;
+  text-shadow: -2px 4px 0px chocolate;
 }
 
 #how-to-play p {
@@ -306,13 +297,14 @@ canvas {
   font-weight: bold;
   color: #ffc91d;
   text-shadow: 1px 0 black, 0px 0px 0 black, 0px 0px 0 black, 2px 1px 0 black;
+  width: 100%;
 }
 
 #impressum-container {
   max-width: 600px;
   margin: 50px auto;
   padding: 20px;
-  background: #fff;
+  background: #c98345;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -321,18 +313,24 @@ canvas {
 
 #impressum-container h1 {
   font-size: 24px;
+  color: #aeca54;
+  text-shadow: -2px 4px 0px chocolate;
+  margin-bottom: 15px;
 }
 
 #impressum-container p {
   font-size: 16px;
   line-height: 1.5;
+  color: #faf1e0;
+  text-shadow: -2px 4px 0px chocolate;
+  margin-bottom: 10px;
 }
 
 #impressum-container a {
   display: inline-block;
   margin-top: 20px;
   padding: 10px 15px;
-  background: #007bff;
+  background: #aeca54;
   color: white;
   text-decoration: none;
   border-radius: 5px;
@@ -342,9 +340,107 @@ canvas {
   background: #0056b3;
 }
 
-@media only screen and (min-width: 721px) {
+#game-info h2 {
+  font-size: 24px;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  white-space: nowrap;
+  color: #aeca54;
+  text-shadow: -2px 4px 0px chocolate;
+}
+
+#game-info p {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: normal;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-weight: bold;
+  color: #ffc91d;
+  text-shadow: 1px 0 black, 0px 0px 0 black, 0px 0px 0 black, 2px 1px 0 black;
+}
+
+#instructions-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #ffa400;
+  cursor: pointer;
+  font-family: "zabars", Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+#instructions-btn:hover {
+  background-color: #faf1e081;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  padding: 10px;
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  max-height: 80%;
+  overflow-y: auto;
+  background: #c98345;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #aeca54;
+  color: #000;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.close-btn:hover {
+  background: #0056b3;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
   #game-controls {
     display: none !important;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    padding: 15px;
+  }
+  .close-btn {
+    font-size: 14px;
+    padding: 4px 8px;
   }
 }
 
@@ -355,6 +451,8 @@ canvas {
   }
 
   #game-controls {
+    display: flex !important;
+    justify-content: center;
     bottom: 10px;
     width: 95%;
   }
@@ -395,6 +493,68 @@ canvas {
   #how-to-play p {
     font-size: 16px;
   }
+
+  #game-info {
+    flex-wrap: wrap;
+    font-size: 14px;
+    gap: 15px;
+  }
+
+  #game-info h2 {
+    font-size: 18px;
+  }
+
+  #game-info p {
+    font-size: 16px;
+  }
+
+  #impressum-container {
+    max-width: 90%;
+    padding: 15px;
+  }
+
+  #impressum-container h1 {
+    font-size: 20px;
+  }
+
+  #impressum-container p {
+    font-size: 14px;
+  }
+
+  #impressum-container a {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #impressum-container {
+    max-width: 95%;
+    padding: 10px;
+  }
+
+  #impressum-container h1 {
+    font-size: 18px;
+  }
+
+  #impressum-container p {
+    font-size: 12px;
+  }
+
+  #impressum-container a {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .modal-content {
+    max-width: 55%;
+    max-height: 95%;
+    padding: 10px;
+  }
+  .close-btn {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
 }
 
 @media only screen and (max-height: 480px) {
@@ -426,5 +586,19 @@ canvas {
 
   #how-to-play span {
     font-size: 12px;
+  }
+
+  #game-info {
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  #game-info h2 {
+    font-size: 14px;
+  }
+
+  #game-info p {
+    font-size: 12px;
+    white-space: normal;
   }
 }

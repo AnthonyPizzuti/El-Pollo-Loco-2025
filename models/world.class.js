@@ -74,7 +74,7 @@ class World {
         this.checkAllSmallEnemiesDead();
         this.checkWinCondition();
         this.checkGameOver();
-      }, 200)
+      }, 1000 / 60)
     );
   }
 
@@ -98,7 +98,6 @@ class World {
     this.gameLoopActive = true;
     this.gameLoop = setInterval(() => {
       this.rendering.draw();
-      this.throwBottle();
       this.checkCollisionCoin();
       this.checkCollisionBottle();
       this.checkAllSmallEnemiesDead();
@@ -334,10 +333,9 @@ checkBottleEnemyCollision() {
   throwBottle() {
     if (this.keyboard && this.keyboard.D && this.character.bottles > 0) {
       this.character.throwBottle();
-      const bottle = new ThrowableObject();
-      this.throwableObjects.push(bottle);
     }
   }
+  
 
   /**
    * Erstellt in regelmäßigen Abständen neue Flaschen an zufälligen Positionen im Level.

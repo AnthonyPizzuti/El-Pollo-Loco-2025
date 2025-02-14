@@ -40,6 +40,7 @@
           Bitte drehen Sie Ihr Handy ins Querformat, um das Spiel zu spielen.
         </p>
       </div>
+      <button id="instructions-btn"><img src="./img/controll/howtoplay.png" alt="Anleitung" /></button>
       <canvas id="canvas" width="720" height="480"> </canvas>
       <div id="pause-screen" class="hidden">
         <h2>Pause</h2>
@@ -61,7 +62,7 @@
       <button id="playButton">Play</button>
       <button id="restartButton" class="hidden"></button>
 
-      <div id="game-controls" class="controls hidden">
+      <div id="game-controls" class="controls">
         <div id="controls-left-and-right">
           <button id="left-btn" class="control-btn">
             <img src="./img/controll/left.png" alt="left" />
@@ -80,12 +81,21 @@
         </div>
       </div>
     </div>
-    <div id="how-to-play">
-      <h2>How to Play:</h2>
-      <p>⬅️ <span>Walk Left</span></p>
-      <p>➡️ <span>Walk Right</span></p>
-      <p>🔼 <span>Jump</span></p>
-      <p>🅳 <span>Throw Bottle</span></p>
+<div id="instructions-modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="close-modal" class="close-btn">X</button>
+      <div id="how-to-play">
+        <h2>How to Play:</h2>
+        <p>⬅️ <span>Walk Left</span></p>
+        <p>➡️ <span>Walk Right</span></p>
+        <p>🔼 <span>Jump</span></p>
+        <p>🅳 <span>Throw Bottle</span></p>
+      </div>
+      <div id="game-info">
+        <h2>Game-Info:</h2>
+        <p>Besiege alle kleineren Gegner, damit der Endboss erscheint!</p>
+      </div>
     </div>
+  </div>  
   </body>
 </html>

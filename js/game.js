@@ -32,12 +32,13 @@ function showStartScreen() {
   document.getElementById("playButton").addEventListener("click", () => {
     gameStarted = true;
     document.getElementById("impressum-icon").style.display = "none";
-    document.getElementById("game-controls").classList.remove("hidden");
     document.getElementById("playButton").classList.add("hidden");
     document.getElementById("pause-btn").style.display = "block";
     let pauseBtn = document.getElementById("pause-btn");
     pauseBtn.style.display = "block";
     pauseBtn.style.pointerEvents = "auto";
+    document.getElementById("instructions-btn").style.display = "none";
+    document.getElementById("game-controls").classList.remove("hidden");
     init();
   });
 }
@@ -63,26 +64,19 @@ function init() {
   /**
    * Fügt Event-Listener für die Touch-Steuerung hinzu.
    */
-  document.getElementById("left-btn").addEventListener("touchstart", (event) => { event.preventDefault();
-      keyboard.LEFT = true;
+  document.getElementById("left-btn").addEventListener("touchstart", (event) => { event.preventDefault(); keyboard.LEFT = true;
     });
   document.getElementById("left-btn").addEventListener("touchend", () => { keyboard.LEFT = false;
   });
-
-  document.getElementById("right-btn").addEventListener("touchstart", (event) => { event.preventDefault();
-      keyboard.RIGHT = true;
+  document.getElementById("right-btn").addEventListener("touchstart", (event) => { event.preventDefault(); keyboard.RIGHT = true;
     });
   document.getElementById("right-btn").addEventListener("touchend", () => { keyboard.RIGHT = false;
   });
-
-  document.getElementById("jump-btn").addEventListener("touchstart", (event) => { event.preventDefault();
-      keyboard.SPACE = true;
+  document.getElementById("jump-btn").addEventListener("touchstart", (event) => { event.preventDefault(); keyboard.SPACE = true;
     });
   document.getElementById("jump-btn").addEventListener("touchend", () => { keyboard.SPACE = false;
   });
-
-  document.getElementById("throw-btn").addEventListener("touchstart", (event) => { event.preventDefault();
-      keyboard.D = true;
+  document.getElementById("throw-btn").addEventListener("touchstart", (event) => { event.preventDefault(); keyboard.D = true;
     });
   document.getElementById("throw-btn").addEventListener("touchend", () => { keyboard.D = false;
   });
@@ -126,6 +120,7 @@ document.addEventListener("keyup", (e) => {
   if (e.keyCode == 32) { keyboard.SPACE = false;
   }
   if (e.keyCode == 68) { keyboard.D = false;
+    world.character.canThrow = true;
   }
 });
 
@@ -134,7 +129,8 @@ document.addEventListener("keyup", (e) => {
  */
 function playBackgroundMusic() {
   if (!isMuted && gameStarted) {
-    backgroundMusic.play().catch()};
+    backgroundMusic.play().catch();
+  }
 }
 
 /**
@@ -156,8 +152,7 @@ registerSound(backgroundMusic, true);
  * Schließt das Impressum und kehrt zum Spiel zurück.
  */
 function closeImpressum() {
-  if (window.opener) {
-    window.close();
+  if (window.opener) { window.close();
   } else { window.location.href = "index.html";
   }
 }
@@ -188,10 +183,10 @@ function restartIntervals() {
  * Zeigt den Gewinnbildschirm an.
  */
 function showWinningScreen() {
-    if (world && world.endboss_sound) {
-        world.endboss_sound.pause();
-        world.endboss_sound.currentTime = 0;
-    }
+  if (world && world.endboss_sound) {
+    world.endboss_sound.pause();
+    world.endboss_sound.currentTime = 0;
+  }
   let winningScreen = new WinningScreen("restartButton");
   setTimeout(() => {}, 1000);
 }
@@ -259,26 +254,27 @@ document.addEventListener("DOMContentLoaded", () => {
  * Schaltet zwischen Stummschaltung und Ton an/aus.
  */
 function toggleMute() {
-    isMuted = !isMuted;
-    document.getElementById("mute-btn").querySelector("img").src = 
-      isMuted ? "./img/controll/mute.png" : "./img/controll/ton.png";
-    muteAllSounds();
-    if (!gameStarted && startMusic) { startMusic.muted = isMuted;
-      if (!isMuted && startMusic.paused) startMusic.volume = 0.5, startMusic.play();
-    } else { startMusic?.pause(), startMusic.currentTime = 0;
-      if (backgroundMusic) {
-        backgroundMusic.muted = isMuted;
-        if (!isMuted && backgroundMusic.paused) backgroundMusic.volume = 0.05, backgroundMusic.play();
-      }
+  isMuted = !isMuted;
+  document.getElementById("mute-btn").querySelector("img").src = isMuted ? "./img/controll/mute.png" : "./img/controll/ton.png";
+  muteAllSounds();
+  if (!gameStarted && startMusic) { startMusic.muted = isMuted;
+    if (!isMuted && startMusic.paused)
+      (startMusic.volume = 0.5), startMusic.play();
+  } else { startMusic?.pause(), (startMusic.currentTime = 0);
+    if (backgroundMusic) { backgroundMusic.muted = isMuted;
+      if (!isMuted && backgroundMusic.paused)
+        (backgroundMusic.volume = 0.05), backgroundMusic.play();
     }
   }
+}
 
 /**
  * Stellt sicher, dass alle Sounds auf die Mute-Einstellung angepasst sind.
  */
 function muteAllSounds() {
   allGameSounds.forEach((sound) => {
-    if (sound) { if (isMuted) { sound.muted = true;
+    if (sound) {
+      if (isMuted) { sound.muted = true;
         sound.pause();
       } else { sound.muted = false;
         if (sound.loop && !sound.isStartSound) { sound.play().catch(() => {});
@@ -296,7 +292,8 @@ function muteAllSounds() {
  * @param {boolean} [isStartSound=false] - Gibt an, ob der Sound ein Start-Sound ist.
  */
 function registerSound(sound, isStartSound = false) {
-  if (sound && !allGameSounds.includes(sound)) { sound.isStartSound = isStartSound;
+  if (sound && !allGameSounds.includes(sound)) {
+    sound.isStartSound = isStartSound;
     sound.muted = isMuted;
     allGameSounds.push(sound);
   }
@@ -309,7 +306,6 @@ function registerSound(sound, isStartSound = false) {
 document.addEventListener("DOMContentLoaded", () => {
   let muteBtn = document.getElementById("mute-btn");
   if (muteBtn) { muteBtn.addEventListener("click", toggleMute);
-  } else {
   }
 });
 
@@ -319,16 +315,9 @@ document.addEventListener("DOMContentLoaded", () => {
 function togglePause() {
   gamePaused = !gamePaused;
   let pauseScreen = document.getElementById("pause-screen");
-  if (gamePaused) { previousMuteState = isMuted;
-    isMuted = true;
-    muteAllSounds();
-    pauseScreen.classList.remove("hidden");
-    world.stopAllMovement();
-  } else { pauseScreen.classList.add("hidden");
-    world.resumeAllMovement();
-    isMuted = previousMuteState;
-    muteAllSounds();
-    updateBackgroundMusic();
+  let muteBtn = document.getElementById("mute-btn");
+  if (gamePaused) { previousMuteState = isMuted; isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden"); world.stopAllMovement(); muteBtn.style.pointerEvents = "none"; muteBtn.style.opacity = "0.5";
+  } else { pauseScreen.classList.add("hidden"); world.resumeAllMovement(); isMuted = previousMuteState; muteAllSounds(); updateBackgroundMusic(); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
   }
 }
 
@@ -361,6 +350,15 @@ function restartGame() {
  * Außerdem überprüft es die Bildschirmorientierung und reagiert auf Änderungen.
  */
 document.addEventListener("DOMContentLoaded", () => {
+  const instructionsBtn = document.getElementById("instructions-btn");
+  const instructionsModal = document.getElementById("instructions-modal");
+  const closeModalBtn = document.getElementById("close-modal");
+  if (instructionsBtn && instructionsModal) { instructionsBtn.addEventListener("click", () => { instructionsModal.classList.remove("hidden");
+    });
+  }
+  if (closeModalBtn && instructionsModal) { closeModalBtn.addEventListener("click", () => { instructionsModal.classList.add("hidden");
+    });
+  }
   let resumeBtn = document.getElementById("resume-btn");
   let restartBtn = document.getElementById("restart-btn");
   let pauseBtn = document.getElementById("pause-btn");
@@ -376,28 +374,27 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
+ * Überprüft, ob das aktuelle Gerät ein mobiles Gerät ist.
+ *
+ * @returns {boolean} `true`, wenn das Gerät ein mobiles Gerät ist, sonst `false`.
+ */
+function isMobile() { return (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.userAgent.includes("Macintosh") && navigator.maxTouchPoints && navigator.maxTouchPoints > 1));
+}
+
+/**
  * Überprüft die Geräteausrichtung und pausiert das Spiel ggf.
  */
 function checkOrientation() {
   const overlay = document.getElementById("orientation-overlay");
   const pauseScreen = document.getElementById("pause-screen");
   if (!overlay || !pauseScreen) return;
-  if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.style.display = "flex";
+  if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.classList.remove("hidden");
       if (gameStarted && !gamePaused) { gamePaused = true; isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
       }
-    } else { overlay.style.display = "none";
-      if (gamePaused && gameStarted) { gamePaused = false; isMuted = false; muteAllSounds(); pauseScreen.classList.add("hidden");
+    } else { overlay.classList.add("hidden"); 
+        if (gamePaused && gameStarted) { gamePaused = false; isMuted = false; muteAllSounds(); pauseScreen.classList.add("hidden");
       }
     }
-  } else { overlay.style.display = "none";
+  } else { overlay.classList.add("hidden");
   }
-}
-
-/**
- * Überprüft, ob das aktuelle Gerät ein mobiles Gerät ist.
- *
- * @returns {boolean} `true`, wenn das Gerät ein mobiles Gerät ist, sonst `false`.
- */
-function isMobile() {
-  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }

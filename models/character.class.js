@@ -120,6 +120,7 @@ class Character extends MovableObject {
     registerSound(this.dead_sound);
     registerSound(this.hurt_sound);
     registerSound(this.sleep_sound);
+    this.canThrow = true;
   }
 
   /**
@@ -293,7 +294,9 @@ checkLanding() {
    * Die Flasche wird in die Richtung geworfen, in die der Charakter schaut.
    */
   throwBottle() {
-    if (this.bottles > 0) { this.bottles -= 1;
+    if (this.bottles > 0 && this.canThrow) {
+      this.canThrow = false;
+      this.bottles -= 1;
       const percentage = Math.max((this.bottles / this.totalBottles) * 100, 0);
       this.world.bottleBar.setPercentage(percentage);
       let bottleX = this.x + (this.otherDirection ? -20 : 100);
@@ -302,11 +305,10 @@ checkLanding() {
       bottle.otherDirection = this.otherDirection;
       bottle.speedX = this.otherDirection ? -5 : 5;
       bottle.applyGravity();
-      if (!this.world.throwableObjects) { this.world.throwableObjects = [];
-      }
       this.world.throwableObjects.push(bottle);
     }
   }
+  
 
   /**
    * Erhöht die Anzahl gesammelter Münzen und aktualisiert die Münzleiste.
