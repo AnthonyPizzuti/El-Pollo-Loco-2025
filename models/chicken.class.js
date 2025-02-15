@@ -69,28 +69,17 @@ class Chicken extends MovableObject {
    * und stoppt, wenn es stirbt.
    */
   animate() {
-    let movementInterval = setInterval(() => {
-      if (!this.isDead) {
-        this.moveLeft();
-        if (!this.chicken_sound.playing) {
-          this.chicken_sound.play();
+    let movementInterval = setInterval(() => { if (!this.isDead) { this.moveLeft();
+        if (!this.chicken_sound.playing) { this.chicken_sound.play();
         }
         this.chicken_sound.volume = 0.02;
-      } else {
-        this.chicken_sound.pause();
+      } else { this.chicken_sound.pause();
       }
     }, 1000 / 60);
-
-    let animationInterval = setInterval(() => {
-      if (this.isDead) {
-        this.playAnimation(this.IMAGES_DEAD);
-        if (!this.deadSoundPlayed) {
-          this.chicken_dead_sound.play();
-          this.deadSoundPlayed = true;
-          this.chicken_sound.pause();
+    let animationInterval = setInterval(() => { if (this.isDead) { this.playAnimation(this.IMAGES_DEAD);
+        if (!this.deadSoundPlayed) { this.chicken_dead_sound.play(); this.deadSoundPlayed = true; this.chicken_sound.pause();
         }
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
+      } else { this.playAnimation(this.IMAGES_WALKING);
       }
     }, 50);
     intervalIds.push(movementInterval, animationInterval);
@@ -108,10 +97,8 @@ class Chicken extends MovableObject {
     this.chicken_dead_sound.play();
     this.playAnimation(this.IMAGES_DEAD);
     setTimeout(() => {
-      if (this.world && this.world.level && this.world.level.enemies) {
-        let index = this.world.level.enemies.indexOf(this);
-        if (index > -1) {
-          this.world.level.enemies.splice(index, 1);
+      if (this.world && this.world.level && this.world.level.enemies) { let index = this.world.level.enemies.indexOf(this);
+        if (index > -1) { this.world.level.enemies.splice(index, 1);
         }
       }
     }, 1000);

@@ -17,7 +17,6 @@ class World {
   coin_sound = new Audio("audio/coin.mp3");
   endboss_sound = new Audio("audio/endboss.mp3");
   endboss_attack_sound = new Audio("audio/endboss-attack.mp3");
-  backgroundMusic = new Audio("audio/backgroud-music.mp3");
   endbossSpawned = false;
   winScreenDisplayed = false;
   gameOverDisplayed = false;
@@ -110,13 +109,9 @@ class World {
    * Stops all movement in the game.
    */
   stopAllMovement() {
-    this.level.enemies.forEach((enemy) => {
-      enemy.storedSpeed = enemy.speed;
-      enemy.speed = 0;
+    this.level.enemies.forEach((enemy) => { enemy.storedSpeed = enemy.speed; enemy.speed = 0;
     });
-    this.throwableObjects.forEach((bottle) => {
-      bottle.storedSpeedX = bottle.speedX;
-      bottle.speedX = 0;
+    this.throwableObjects.forEach((bottle) => { bottle.storedSpeedX = bottle.speedX; bottle.speedX = 0;
     });
     this.character.storedSpeedX = this.character.speedX;
     this.character.speedX = 0;
@@ -126,11 +121,9 @@ class World {
    * Resumes all movement in the game.
    */
   resumeAllMovement() {
-    this.level.enemies.forEach((enemy) => {
-      enemy.speed = enemy.storedSpeed || 1;
+    this.level.enemies.forEach((enemy) => { enemy.speed = enemy.storedSpeed || 1;
     });
-    this.throwableObjects.forEach((bottle) => {
-      bottle.speedX = bottle.storedSpeedX || (bottle.otherDirection ? -5 : 5);
+    this.throwableObjects.forEach((bottle) => { bottle.speedX = bottle.storedSpeedX || (bottle.otherDirection ? -5 : 5);
     });
     this.character.speedX = this.character.storedSpeedX || 0;
   }
@@ -141,8 +134,7 @@ class World {
   assignWorldToEnemies() {
     if (!this.enemiesAssigned) {
       this.level.enemies.forEach((enemy) => {
-        if (!enemy.world) {
-          enemy.setWorld(this);
+        if (!enemy.world) { enemy.setWorld(this);
         }
       });
       this.enemiesAssigned = true;
@@ -186,8 +178,7 @@ class World {
     const endboss = new Endboss();
     this.level.enemies.push(endboss);
     this.endbossSpawned = true;
-    if (backgroundMusic) {
-      backgroundMusic.pause();
+    if (backgroundMusic) { backgroundMusic.pause();
     }
     this.endboss_sound.play();
     this.endboss_sound.volume = 0.2;
@@ -258,6 +249,7 @@ checkBottleEnemyCollision() {
     this.level.bottles.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
         this.bottle_sound.play();
+        this.bottle_sound.volume = 0.1;
         this.level.bottles.splice(index, 1);
         this.character.collectBottle();
       }

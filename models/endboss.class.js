@@ -105,29 +105,21 @@ class Endboss extends MovableObject {
     this.endboss_sound = new Audio("audio/endboss.mp3");
     this.endboss_sound.volume = 0.2;
     this.endboss_sound.loop = true;
-
+    registerSound(this.endboss_sound)
   }
 
   /**
    * Startet die Animationen des Endbosses für Bewegung, Status und Angriff.
    */
   animate() {
-    let walkInterval = setInterval(() => {
-      this.playAnimation(this.IMAGES_WALK);
-      this.moveLeft();
+    let walkInterval = setInterval(() => { this.playAnimation(this.IMAGES_WALK); this.moveLeft();
     }, 200);
-    let stateChangeInterval = setInterval(() => {
-      if (this.isDead) {
-        this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.hits >= 3 && this.hits < 7) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
+    let stateChangeInterval = setInterval(() => { if (this.isDead) { this.playAnimation(this.IMAGES_DEAD);
+      } else if (this.hits >= 3 && this.hits < 7) { this.playAnimation(this.IMAGES_HURT);
+      } else { this.playAnimation(this.IMAGES_WALKING);
       }
     }, 200);
-    let attackInterval = setInterval(() => {
-      if (!this.isDead) {
-        this.playAnimation(this.IMAGES_ATTACK);
+    let attackInterval = setInterval(() => { if (!this.isDead) { this.playAnimation(this.IMAGES_ATTACK);
       }
     }, 5000);
     intervalIds.push(walkInterval, stateChangeInterval, attackInterval);
@@ -143,22 +135,18 @@ class Endboss extends MovableObject {
   die() {
     if (this.isDead) return;
     this.isDead = true;
-    if (this.endboss_sound) {
-        this.endboss_sound.pause();
-        this.endboss_sound.currentTime = 0;
-    }
-    clearInterval(this.walkInterval);
-    clearInterval(this.stateChangeInterval);
-    clearInterval(this.attackInterval);
-    let deathAnimationInterval = setInterval(() => {
-        this.playAnimation(this.IMAGES_DEAD);
+    if (this.endboss_sound) { this.endboss_sound.pause(); this.endboss_sound.currentTime = 0;
+      let index = allGameSounds.indexOf(this.endboss_sound);
+      if (index > -1) { allGameSounds.splice(index, 1);
+      }
+    } clearInterval(this.walkInterval); clearInterval(this.stateChangeInterval); clearInterval(this.attackInterval);
+    let deathAnimationInterval = setInterval(() => { this.playAnimation(this.IMAGES_DEAD);
     }, 200);
-    setTimeout(() => {
-        clearInterval(deathAnimationInterval);
-        this.removeFromWorld();
+    setTimeout(() => { clearInterval(deathAnimationInterval); 
+      this.removeFromWorld();
     }, 2000);
-}
-
+  }
+  
 /**
  * Removes the entity from the world's enemy list.
  * Ensures that the entity is properly deleted from the game upon death.

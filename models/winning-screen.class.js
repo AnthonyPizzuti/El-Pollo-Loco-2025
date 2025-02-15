@@ -39,16 +39,13 @@ class WinningScreen {
     winImageElement.src = this.winImage.src;
     let restartButton = document.createElement("button");
     restartButton.innerText = "Neustart";
-    restartButton.addEventListener("click", () => location.reload());
+    restartButton.addEventListener("click", () => { winningScreenDiv.remove(); restartGame(); });
     winningScreenDiv.appendChild(winImageElement);
     winningScreenDiv.appendChild(restartButton);
     let container = document.getElementById("game-container");
-    if (container) {
-      container.appendChild(winningScreenDiv);
-    } else {
-      document.body.appendChild(winningScreenDiv);
-    }
+    if (container) { container.appendChild(winningScreenDiv); } else { document.body.appendChild(winningScreenDiv); }
   }
+  
 
   /**
    * Spielt die Gewinn-Musik ab, wenn das Spiel gewonnen wurde.

@@ -115,7 +115,7 @@ canvas {
 
 #winning-screen img {
   max-width: 90vw;
-  max-height: 90vh;
+  max-height: 88vh;
 }
 
 #winning-screen button {
@@ -126,7 +126,6 @@ canvas {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 20px;
 }
 
 #winning-screen button:hover {
@@ -262,7 +261,7 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 9998;
 }
 
 #orientation-overlay.hidden {
@@ -434,6 +433,7 @@ canvas {
     width: 95%;
     position: absolute;
     padding-left: 15px;
+    z-index: 2000;
   }
 }
 

@@ -120,6 +120,10 @@ class Character extends MovableObject {
     registerSound(this.hurt_sound);
     registerSound(this.sleep_sound);
     this.canThrow = true;
+    this.jumpingAnimationActive = false;
+    this.jumpFrameIndex = 0;
+    this.jumpAnimInterval = null;
+
   }
 
   /**
@@ -130,6 +134,25 @@ class Character extends MovableObject {
     intervalIds.push(setInterval(() => this.playCharacter(), 100));
   }
 
+  /**
+   * 
+   * Animiert die Sprung Animation.
+   */
+  startJumpAnimation() {
+    if (this.jumpingAnimationActive) return;
+    this.jumpingAnimationActive = true;
+    this.jumpFrameIndex = 0;
+    this.jumpAnimInterval = setInterval(() => {
+      if (!this.isAboveGround()) {
+        clearInterval(this.jumpAnimInterval);
+        this.jumpingAnimationActive = false;
+        return;
+      }
+      this.img = this.imageCache[this.IMAGES_JUMPING[this.jumpFrameIndex % this.IMAGES_JUMPING.length]];
+      this.jumpFrameIndex++;
+    }, 60);
+  }
+  
   /**
    * Bewegt den Charakter basierend auf der Tasteneingabe.
    */
@@ -192,7 +215,7 @@ class Character extends MovableObject {
       this.sleep_sound.play();
     } else if (this.isHurt()) { this.playAnimation(this.IMAGES_HURT);
       this.hurt_sound.play();
-    } else if (this.isAboveGround()) { this.playAnimation(this.IMAGES_JUMPING);
+    } else if (this.isAboveGround()) { this.startJumpAnimation();
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
       this.playAnimation(this.IMAGES_WALKING);
     } else { this.playAnimation(this.IMAGES_IDLE);
@@ -253,6 +276,22 @@ class Character extends MovableObject {
     const percentage = Math.min((this.bottles / this.totalBottles) * 100, 100);
     this.world.bottleBar.setPercentage(percentage);
   }
+
+  /**
+   * 
+   * Prüft ob der Character während des schlafens gehitet wird.
+   */
+  hit() {
+    if (this.isHurt()) return;
+    if (this.isSleepingActive) {
+      this.stopSleeping();
+      this.lastMovementTime = new Date().getTime();
+    }
+    super.hit();
+    this.playAnimation(this.IMAGES_HURT);
+    this.hurt_sound.play();
+  }
+  
 
   /**
    * Lässt den Charakter eine Flasche werfen, wenn er eine besitzt.

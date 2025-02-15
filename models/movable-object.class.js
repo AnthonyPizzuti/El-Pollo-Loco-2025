@@ -72,6 +72,7 @@ class MovableObject extends DrawableObject {
    * Falls die Energie unter 0 fällt, wird `gameOver()` aufgerufen.
    */
   hit() {
+    if (this.isHurt()) return; 
     this.energy -= 5;
     if (this.energy < 0) {
       this.energy = 0;
@@ -87,8 +88,8 @@ class MovableObject extends DrawableObject {
    */
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
-    timepassed = timepassed / 1000; // Difference in s
-    return timepassed < 1;
+    timepassed = timepassed
+    return timepassed < 200;
   }
 
   /**

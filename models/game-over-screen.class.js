@@ -39,16 +39,13 @@ class GameOverScreen {
     gameOverImageElement.src = this.gameOverImage.src;
     let restartButton = document.createElement("button");
     restartButton.innerText = "Neustart";
-    restartButton.addEventListener("click", () => location.reload());
+    restartButton.addEventListener("click", () => { gameOverScreenDiv.remove(); restartGame(); });
     gameOverScreenDiv.appendChild(gameOverImageElement);
     gameOverScreenDiv.appendChild(restartButton);
     let container = document.getElementById("game-container");
-    if (container) {
-      container.appendChild(gameOverScreenDiv);
-    } else {
-      document.body.appendChild(gameOverScreenDiv);
-    }
+    if (container) { container.appendChild(gameOverScreenDiv); } else { document.body.appendChild(gameOverScreenDiv); }
   }
+  
 
   /**
    * Spielt die Game-Over-Musik ab, falls das Spiel nicht gemutet ist.
