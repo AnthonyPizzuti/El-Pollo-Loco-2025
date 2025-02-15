@@ -39,8 +39,18 @@
         <strong>Haftungsausschluss:</strong><br />
         Dies ist ein fiktives Impressum für das Spiel "El Pollo Loco".
       </p>
-
-      <a href="#" onclick="closeImpressum()">Zurück zum Spiel</a>
+      <button id="closeImpressum">Zurück zum Spiel</button>
     </div>
+    <script>
+      document
+        .getElementById("closeImpressum")
+        .addEventListener("click", function () {
+          if (window.opener) {
+            window.close();
+          } else {
+            history.back();
+          }
+        });
+    </script>
   </body>
 </html>

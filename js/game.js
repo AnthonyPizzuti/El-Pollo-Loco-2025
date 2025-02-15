@@ -152,11 +152,12 @@ registerSound(backgroundMusic, true);
 /**
  * Schließt das Impressum und kehrt zum Spiel zurück.
  */
-function closeImpressum() {
-  if (window.opener) { window.close();
-  } else { window.location.href = "index.html";
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+    let impressumLink = document.getElementById("impressum-icon");
+    if (impressumLink) { impressumLink.addEventListener("click", function (event) { event.preventDefault(); window.open("impressum.html", "_blank");
+        });
+    }
+});
 
 /**
  * Stoppt alle gesetzten Intervalle und beendet das Zeichnen der Welt.
@@ -333,6 +334,8 @@ function resumeGame() {
   muteAllSounds();
   world.resumeAllMovement();
   updateBackgroundMusic();
+  let muteBtn = document.getElementById("mute-btn");
+  muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
 }
 
 /**
@@ -366,6 +369,9 @@ document.addEventListener("DOMContentLoaded", () => {
   } if (restartBtn) { restartBtn.addEventListener("click", restartGame);
   } if (pauseBtn) { pauseBtn.addEventListener("click", togglePause);
   }
+  let closeImpressumBtn = document.getElementById("close-impressum-btn");
+  if (closeImpressumBtn) { closeImpressumBtn.addEventListener("click", closeImpressum);
+  }
   checkOrientation();
   window.addEventListener("resize", checkOrientation);
   window.addEventListener("orientationchange", checkOrientation);
@@ -383,16 +389,17 @@ function isMobile() { return (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.us
  * Überprüft die Geräteausrichtung und pausiert das Spiel ggf.
  */
 function checkOrientation() {
-  const overlay = document.getElementById("orientation-overlay");
-  const pauseScreen = document.getElementById("pause-screen");
-  if (!overlay || !pauseScreen) return;
-  if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.classList.remove("hidden");
-      if (gameStarted && !gamePaused) { gamePaused = true; isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
+    const overlay = document.getElementById("orientation-overlay");
+    const pauseScreen = document.getElementById("pause-screen");
+    if (!overlay || !pauseScreen) return;
+    if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.classList.remove("hidden");
+        if (gameStarted && !gamePaused) { gamePaused = true; localStorage.setItem("previousMuteState", isMuted); isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
+        }
+      } else { overlay.classList.add("hidden");
+        if (gamePaused && gameStarted) { gamePaused = false; isMuted = localStorage.getItem("previousMuteState") === "true"; muteAllSounds(); pauseScreen.classList.add("hidden");
+        }
       }
-    } else { overlay.classList.add("hidden"); 
-        if (gamePaused && gameStarted) { gamePaused = false; isMuted = false; muteAllSounds(); pauseScreen.classList.add("hidden");
-      }
+    } else { overlay.classList.add("hidden");
     }
-  } else { overlay.classList.add("hidden");
   }
-}
+  

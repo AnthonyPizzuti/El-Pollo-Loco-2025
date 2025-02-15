@@ -20,7 +20,6 @@ body {
   font-family: "zabars", Arial, Helvetica, sans-serif;
   background-image: url("./img/5_background/desert.png");
   background-position: center;
-  background-size: 100%;
 }
 
 #game-container {
@@ -326,7 +325,7 @@ canvas {
   margin-bottom: 10px;
 }
 
-#impressum-container a {
+#impressum-container button {
   display: inline-block;
   margin-top: 20px;
   padding: 10px 15px;
@@ -334,9 +333,10 @@ canvas {
   color: white;
   text-decoration: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
-#impressum-container a:hover {
+#impressum-container button:hover {
   background: #0056b3;
 }
 

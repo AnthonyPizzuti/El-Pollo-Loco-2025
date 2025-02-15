@@ -15,7 +15,6 @@ class Character extends MovableObject {
   sleepTimer = null;
   isJumping = false;
 
-
   /** @type {Object} Offset für die Hitbox */
   offset = {
     top: 120,
@@ -137,26 +136,14 @@ class Character extends MovableObject {
   moveCharacter() {
     this.walking_sound.pause();
     this.jumping_sound.pause();
-    if (this.canMoveRight()) {
-      this.moveRight();
-      this.otherDirection = false;
-      this.updateLastMovement();
-      this.walking_sound.play();
+    if (this.canMoveRight()) { this.moveRight(); this.otherDirection = false; this.updateLastMovement(); this.walking_sound.play();
     }
-    if (this.canMoveLeft()) {
-      this.moveLeft();
-      this.otherDirection = true;
-      this.updateLastMovement();
-      this.walking_sound.play();
+    if (this.canMoveLeft()) { this.moveLeft(); this.otherDirection = true; this.updateLastMovement(); this.walking_sound.play();
     }
-    if (this.canJump()) {
-      this.jump();
-      this.updateLastMovement();
-      this.jumping_sound.play();
+    if (this.canJump()) { this.jump(); this.updateLastMovement(); this.jumping_sound.play();
     }
     this.world.camera_x = -this.x + 100;
     this.checkSleeping();
-    this.checkLanding();
   }
 
   /**
@@ -199,52 +186,30 @@ class Character extends MovableObject {
    */
   playCharacter() {
     if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        this.dead_sound.play();
-    } else if (this.isSleepingActive) { 
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-        this.sleep_sound.play()
-    } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        this.hurt_sound.play();
-    } else if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
+      this.playAnimation(this.IMAGES_DEAD);
+      this.dead_sound.play();
+    } else if (this.isSleepingActive) { this.playAnimation(this.IMAGES_LONG_IDLE);
+      this.sleep_sound.play();
+    } else if (this.isHurt()) { this.playAnimation(this.IMAGES_HURT);
+      this.hurt_sound.play();
+    } else if (this.isAboveGround()) { this.playAnimation(this.IMAGES_JUMPING);
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        this.playAnimation(this.IMAGES_WALKING);
-    } else {
-        this.playAnimation(this.IMAGES_IDLE);
+      this.playAnimation(this.IMAGES_WALKING);
+    } else { this.playAnimation(this.IMAGES_IDLE);
     }
-}
-
-  /**
-   * Lässt den Charakter springen, indem eine vertikale Geschwindigkeit gesetzt wird.
-   */
-  jump() {
-    if (!this.isJumping) {
-        this.speedY = 30;
-        this.isJumping = true;
-    }
-}
-
-/**
- * Checks if the character has landed.
- * If the character is not above ground, it resets the jump state.
- *
- * @returns {void}
- */
-checkLanding() {
-    if (!this.isAboveGround()) {
-        this.isJumping = false;
-    }
-}
+  }
 
   /**
    * Überprüft, ob der Charakter für eine gewisse Zeit inaktiv war und wechselt dann in den Schlafmodus.
    */
   checkSleeping() {
     const now = new Date().getTime();
-    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.D) {
-        this.updateLastMovement();
+    if (
+      this.world.keyboard.RIGHT ||
+      this.world.keyboard.LEFT ||
+      this.world.keyboard.D
+    ) {
+      this.updateLastMovement();
     }
     if (now - this.lastMovementTime >= 5000 && !this.isSleepingActive) {
       this.isSleeping();
@@ -266,7 +231,7 @@ checkLanding() {
    * Stoppt die Schlafanimation des Charakters.
    */
   stopSleeping() {
-    this.isSleepingActive = false; 
+    this.isSleepingActive = false;
     this.playAnimation(this.IMAGES_IDLE);
     this.sleep_sound.pause();
   }
@@ -275,10 +240,10 @@ checkLanding() {
    * Startet die Schlafanimation des Charakters.
    */
   isSleeping() {
-    this.isSleepingActive = true; 
+    this.isSleepingActive = true;
     this.playAnimation(this.IMAGES_LONG_IDLE);
     this.sleep_sound.play();
-}
+  }
 
   /**
    * Erhöht die Anzahl gesammelter Flaschen und aktualisiert die Flaschenleiste.
@@ -294,8 +259,7 @@ checkLanding() {
    * Die Flasche wird in die Richtung geworfen, in die der Charakter schaut.
    */
   throwBottle() {
-    if (this.bottles > 0 && this.canThrow) {
-      this.canThrow = false;
+    if (this.bottles > 0 && this.canThrow) { this.canThrow = false;
       this.bottles -= 1;
       const percentage = Math.max((this.bottles / this.totalBottles) * 100, 0);
       this.world.bottleBar.setPercentage(percentage);
@@ -306,10 +270,10 @@ checkLanding() {
       bottle.speedX = this.otherDirection ? -5 : 5;
       bottle.applyGravity();
       this.world.throwableObjects.push(bottle);
-      setTimeout(() => {this.canThrow = true;}, 500);
+      setTimeout(() => { this.canThrow = true;
+      }, 500);
     }
   }
-  
 
   /**
    * Erhöht die Anzahl gesammelter Münzen und aktualisiert die Münzleiste.
@@ -319,5 +283,4 @@ checkLanding() {
     const percentage = Math.min((this.coins / this.totalCoins) * 100, 100);
     this.world.coinBar.setPercentage(percentage);
   }
-
 }

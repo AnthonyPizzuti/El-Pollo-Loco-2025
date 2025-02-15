@@ -20,12 +20,12 @@ class MovableObject extends DrawableObject {
         if (this instanceof ThrowableObject) {
           this.y = this.y >= 400 ? 400 : this.y - this.speedY;
           this.speedY =
-            this.y >= 400 ? 0 : this.speedY - this.acceleration * 0.3;
+            this.y >= 400 ? 0 : this.speedY - this.acceleration * 0.7;
         } else if (this.isAboveGround() || this.speedY > 0) {
           this.y -= this.speedY;
           this.speedY -= this.acceleration;
         }
-      }, 1000 / 25)
+      }, 1000 / 30)
     );
   }
 
