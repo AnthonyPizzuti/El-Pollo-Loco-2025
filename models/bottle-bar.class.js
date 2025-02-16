@@ -1,11 +1,12 @@
 /**
- * Repräsentiert die Flaschen-Leiste im Spiel.
- * Zeigt an, wie viele Flaschen der Spieler gesammelt hat.
- * Erbt von `DrawableObject`.
+ * Represents the bottle bar in the game.
+ * Displays the number of bottles the player has collected.
+ * Inherits from `DrawableObject`.
  */
 class BottleBar extends DrawableObject {
-  /**
-   * Enthält die Bildpfade für die verschiedenen Stufen der Flaschenanzeige.
+
+ /**
+   * Contains the image paths for the various levels of the bottle indicator.
    * @type {string[]}
    */
   IMAGES_BOTTLE = [
@@ -17,14 +18,14 @@ class BottleBar extends DrawableObject {
     "img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png",
   ];
 
-  /**
-   * Aktueller Prozentsatz der gesammelten Flaschen.
+/**
+   * The current percentage of collected bottles.
    * @type {number}
    */
   percentage = 0;
 
-  /**
-   * Erstellt eine neue Flaschen-Leiste mit Startwert 0.
+ /**
+   * Creates a new bottle bar with an initial value of 0.
    */
   constructor() {
     super();
@@ -36,10 +37,10 @@ class BottleBar extends DrawableObject {
     this.height = 60;
   }
 
-  /**
-   * Aktualisiert die Flaschen-Leiste basierend auf der Anzahl der gesammelten Flaschen.
+ /**
+   * Updates the bottle bar based on the number of collected bottles.
    *
-   * @param {number} percentage - Der neue Prozentsatz der Flaschen.
+   * @param {number} percentage - The new percentage of bottles.
    */
   setPercentage(percentage) {
     this.percentage = percentage;
@@ -51,9 +52,9 @@ class BottleBar extends DrawableObject {
   }
 
   /**
-   * Bestimmt den Index des anzuzeigenden Bildes basierend auf der aktuellen Flaschenmenge.
+   * Determines the index of the image to display based on the current bottle count.
    *
-   * @returns {number} Der Index des Bildes aus `IMAGES_BOTTLE`.
+   * @returns {number} The index of the image from `IMAGES_BOTTLE`.
    */
   resolveImageIndex() {
     if (this.percentage == 100) {

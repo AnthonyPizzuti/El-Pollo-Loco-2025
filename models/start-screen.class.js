@@ -1,6 +1,6 @@
 /**
- * Repräsentiert den Startbildschirm des Spiels.
- * Lädt das Hintergrundbild, spielt die Startmusik ab und startet das Spiel bei Klick.
+ * Represents the start screen of the game.
+ * Loads the background image, plays the start music, and starts the game on click.
  */
 class StartScreen {
   canvas;
@@ -10,10 +10,10 @@ class StartScreen {
   startSound = new Audio("audio/startmusic.mp3");
 
   /**
-   * Erstellt eine neue Instanz des Startbildschirms.
-   * @param {string} canvasId - Die ID des Canvas-Elements.
-   * @param {string} imagePath - Der Pfad zum Hintergrundbild.
-   * @param {string} buttonId - Die ID des Start-Buttons.
+   * Creates a new instance of the start screen.
+   * @param {string} canvasId - The ID of the canvas element.
+   * @param {string} imagePath - The path to the background image.
+   * @param {string} buttonId - The ID of the start button.
    */
   constructor(canvasId, imagePath, buttonId) {
     this.canvas = document.getElementById(canvasId);
@@ -25,8 +25,8 @@ class StartScreen {
   }
 
   /**
-   * Initialisiert den Startbildschirm.
-   * Lädt das Hintergrundbild und spielt Musik ab.
+   * Initializes the start screen.
+   * Loads the background image and plays the music.
    */
   init() {
     this.startImage.onload = () => {
@@ -38,7 +38,7 @@ class StartScreen {
   }
 
   /**
-   * Zeichnet das Hintergrundbild auf das Canvas.
+   * Draws the background image on the canvas.
    */
   drawBackground() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -52,7 +52,7 @@ class StartScreen {
   }
 
   /**
-   * Spielt die Startmusik in einer Dauerschleife ab.
+   * Plays the start music in a loop.
    */
   playMusic() {
     this.startSound.loop = true;
@@ -61,7 +61,7 @@ class StartScreen {
   }
 
   /**
-   * Stoppt die Startmusik und setzt sie zurück.
+   * Stops the start music and resets it.
    */
   stopMusic() {
     this.startSound.pause();
@@ -69,7 +69,7 @@ class StartScreen {
   }
 
   /**
-   * Startet das Spiel, blendet den Startbutton aus und ruft `init()` auf.
+   * Starts the game, hides the start button, and calls `init()`.
    */
   startGame() {
     this.stopMusic();

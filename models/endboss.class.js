@@ -1,7 +1,7 @@
 /**
- * Die Klasse `Endboss` stellt den Endgegner im Spiel dar.
- * Sie erbt von `MovableObject` und besitzt verschiedene Animationen
- * sowie einen Angriffsmodus.
+ * Represents the final boss in the game.
+ * Inherits from `MovableObject` and features various animations
+ * as well as an attack mode.
  */
 class Endboss extends MovableObject {
   height = 400;
@@ -10,8 +10,8 @@ class Endboss extends MovableObject {
   isDead = false;
 
 
-  /**
-   * Offset für die Hitbox des Endbosses.
+ /**
+   * Offset for the final boss's hitbox.
    * @type {{top: number, bottom: number, left: number, right: number}}
    */
   offset = {
@@ -21,8 +21,8 @@ class Endboss extends MovableObject {
     right: 10,
   };
 
-  /**
-   * Bilder für die Lauf-Animation.
+ /**
+   * Images for the walking animation.
    * @type {string[]}
    */
   IMAGES_WALKING = [
@@ -37,7 +37,7 @@ class Endboss extends MovableObject {
   ];
 
   /**
-   * Bilder für die Verletzungs-Animation.
+   * Images for the hurt animation.
    * @type {string[]}
    */
   IMAGES_HURT = [
@@ -47,7 +47,7 @@ class Endboss extends MovableObject {
   ];
 
   /**
-   * Bilder für die Angriffs-Animation.
+   * Images for the attack animation.
    * @type {string[]}
    */
   IMAGES_ATTACK = [
@@ -61,8 +61,8 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/3_attack/G20.png",
   ];
 
-  /**
-   * Bilder für den normalen Lauf.
+ /**
+   * Images for the normal walking animation.
    * @type {string[]}
    */
   IMAGES_WALK = [
@@ -73,7 +73,7 @@ class Endboss extends MovableObject {
   ];
 
   /**
-   * Bilder für die Todes-Animation.
+   * Images for the death animation.
    * @type {string[]}
    */
   IMAGES_DEAD = [
@@ -83,14 +83,14 @@ class Endboss extends MovableObject {
   ];
 
   /**
-   * Anzahl der Treffer, die der Endboss erhalten hat.
+   * The number of hits the final boss has received.
    * @type {number}
    */
   hits = 0;
 
-  /**
-   * Erstellt eine neue Instanz des Endbosses.
-   * Lädt die Bilder und startet die Animation.
+ /**
+   * Creates a new instance of the final boss.
+   * Loads the images and starts the animation.
    */
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
@@ -108,8 +108,8 @@ class Endboss extends MovableObject {
     registerSound(this.endboss_sound)
   }
 
-  /**
-   * Startet die Animationen des Endbosses für Bewegung, Status und Angriff.
+ /**
+   * Starts the final boss's animations for movement, state, and attack.
    */
   animate() {
     let walkInterval = setInterval(() => { this.playAnimation(this.IMAGES_WALK); this.moveLeft();
@@ -126,12 +126,12 @@ class Endboss extends MovableObject {
   }
 
   /**
- * Handles the death of the entity.
- * - Prevents multiple executions if already dead.
- * - Stops all movement and attack intervals.
- * - Plays the death animation for 2 seconds.
- * - Removes the entity from the world after the animation.
- */
+   * Handles the death of the final boss.
+   * - Prevents multiple executions if already dead.
+   * - Stops all movement and attack intervals.
+   * - Plays the death animation for 2 seconds.
+   * - Removes the boss from the game after the animation.
+   */
   die() {
     if (this.isDead) return;
     this.isDead = true;

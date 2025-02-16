@@ -1,11 +1,12 @@
 /**
- * Klasse für Objekte, die geworfen werden können (Flaschen).
- * Diese Klasse erweitert `MovableObject` und enthält Logik für das Werfen,
- * die Flugbahn, das Auftreffen auf den Boden und das Zerbrechen der Flasche.
+ * Represents a throwable object (bottle) in the game.
+ * Extends `MovableObject` and contains logic for throwing,
+ * flight path, ground impact, and bottle breaking.
  */
 class ThrowableObject extends MovableObject {
+
   /**
-   * Offset für die Hitbox-Anpassung der Flasche.
+   * Hitbox offsets for the bottle.
    * @type {{ top: number, bottom: number, left: number, right: number }}
    */
   offset = {
@@ -15,8 +16,8 @@ class ThrowableObject extends MovableObject {
     right: 5,
   };
 
-  /**
-   * Bildpfade für die Rotationsanimation der Flasche während des Fluges.
+/**
+   * Image paths for the bottle's rotation animation during flight.
    * @type {string[]}
    */
   IMAGES_BOTTLE = [
@@ -27,7 +28,7 @@ class ThrowableObject extends MovableObject {
   ];
 
   /**
-   * Bildpfade für die Animation, wenn die Flasche zerbricht.
+   * Image paths for the splash animation when the bottle breaks.
    * @type {string[]}
    */
   IMAGES_SPLASH = [
@@ -40,22 +41,22 @@ class ThrowableObject extends MovableObject {
   ];
 
   /**
-   * Soundeffekt für das Werfen der Flasche.
+   * Sound effect for throwing the bottle.
    * @type {HTMLAudioElement}
    */
   throw_sound = new Audio("audio/throw.mp3");
   splash_sound = new Audio("audio/bottle_break.mp3");
 
   /**
-   * Gibt an, ob die Flasche bereits den Boden erreicht hat.
+   * Indicates whether the bottle has already hit the ground.
    * @type {boolean}
    */
   hasHitGround = false;
 
   /**
-   * Erstellt ein neues `ThrowableObject` (Flasche).
-   * @param {number} x - Die Startposition der Flasche auf der X-Achse.
-   * @param {number} y - Die Startposition der Flasche auf der Y-Achse.
+   * Creates a new `ThrowableObject` (bottle).
+   * @param {number} x - The starting x-coordinate of the bottle.
+   * @param {number} y - The starting y-coordinate of the bottle.
    */
   constructor(x, y) {
     super().loadImage(this.IMAGES_BOTTLE[0]);
@@ -72,7 +73,7 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Lässt die Flasche in eine Richtung fliegen und startet die Wurf-Animation.
+   * Throws the bottle in one direction and starts the throwing animation.
    */
   trow() {
     this.playThrowSound();
@@ -89,7 +90,7 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Spielt den Wurf-Sound ab, falls das Spiel nicht gemutet ist.
+   * Plays the throwing sound if the game is not muted.
    */
   playThrowSound() {
     if (!isMuted) {
@@ -99,8 +100,8 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Überprüft, ob die Flasche auf dem Boden auftrifft und startet die Zersplitter-Animation.
-   * @param {number} flightInterval - Die ID des Animations-Intervals.
+   * Checks if the bottle hits the ground and starts the splash animation.
+   * @param {number} flightInterval - The ID of the animation interval.
    */
   checkGroundCollision(flightInterval) {
     if (this.y >= this.groundLevel && !this.hasHitGround) {
@@ -113,8 +114,8 @@ class ThrowableObject extends MovableObject {
     }
   }
 
-  /**
-   * Spielt die Animation ab, wenn die Flasche auf den Boden auftrifft und zerbricht.
+ /**
+   * Plays the splash animation when the bottle hits the ground and breaks.
    */
   playSplashAnimation() {
     if (!isMuted) {
@@ -131,7 +132,7 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Entfernt die Flasche aus dem Spiel, sobald sie zersplittert ist.
+   * Removes the bottle from the game once it has broken.
    */
   removeBottle() {
     if (!this.level || !this.level.throwableObjects) {

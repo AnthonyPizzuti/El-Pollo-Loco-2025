@@ -1,6 +1,6 @@
 /**
- * Repräsentiert ein kleines Chicken als Gegner im Spiel.
- * Erbt von `MovableObject` und bewegt sich von rechts nach links.
+ * Represents a small chicken enemy in the game.
+ * Inherits from `MovableObject` and moves from right to left.
  */
 class Littlechicken extends MovableObject {
   y = 380;
@@ -8,8 +8,8 @@ class Littlechicken extends MovableObject {
   width = 70;
   isDead = false;
 
-  /**
-   * Offset für die Hitbox-Anpassung.
+ /**
+   * Offset for adjusting the hitbox.
    * @type {{top: number, bottom: number, left: number, right: number}}
    */
   offset = {
@@ -20,7 +20,7 @@ class Littlechicken extends MovableObject {
   };
 
   /**
-   * Bilder für die Laufanimation.
+   * Images for the walking animation.
    * @type {string[]}
    */
   IMAGES_WALKING = [
@@ -29,21 +29,23 @@ class Littlechicken extends MovableObject {
     "img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ];
 
-  /**
-   * Bild für das tote Littlechicken.
+ /**
+   * Image for the dead little chicken.
    * @type {string[]}
    */
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
   /**
-   * Soundeffekt für das Chicken-Geräusch.
+   * Sound effect for the chicken sound.
    * @type {HTMLAudioElement}
    */
   chicken_sound = new Audio("audio/chicken.mp3");
   chicken_dead_sound = new Audio("audio/chicken_dead.mp3");
 
   /**
-   * Erstellt ein neues `Littlechicken`-Objekt.
+   * Creates a new `Littlechicken` object.
+   *
+   * @param {World} world - The game world to which this enemy belongs.
    */
   constructor() {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
@@ -57,7 +59,7 @@ class Littlechicken extends MovableObject {
   }
 
   /**
-   * Startet die Animation des Littlechicken (Laufen & Sterben).
+   * Starts the animation of the little chicken (walking & dying).
    */
   animate() {
     let movementInterval = setInterval(() => { if (!this.isDead) { this.moveLeft();

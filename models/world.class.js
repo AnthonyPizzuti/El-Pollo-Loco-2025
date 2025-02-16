@@ -88,9 +88,9 @@ class World {
   }
 
   /**
-   * Startet die Hauptspiel-Schleife, falls sie nicht bereits aktiv ist.
-   * Die Schleife überprüft in regelmäßigen Abständen verschiedene Spielzustände
-   * wie Kollisionen, das Werfen von Flaschen und Sieg- oder Niederlagenbedingungen.
+   * Starts the main game loop if not already active.
+   * The loop periodically checks various game states like collisions,
+   * bottle throwing, and win or game-over conditions.
    */
   startGameLoop() {
     if (this.gameLoopActive) return;
@@ -187,10 +187,9 @@ class World {
   }
 
   /**
- * Prüft, ob eine geworfene Flasche einen Gegner trifft.
- *
- * @returns {void}
- */
+   * Checks whether a thrown bottle collides with an enemy.
+   * @returns {void}
+   */
 checkBottleEnemyCollision() {
     this.throwableObjects.forEach((bottle, bottleIndex) => { if (bottle.hasHitGround) return;
       for (let i = 0; i < this.level.enemies.length; i++) { const enemy = this.level.enemies[i];
@@ -207,10 +206,9 @@ checkBottleEnemyCollision() {
   }
   
   /**
- * Prüft, ob der Charakter auf einen Gegner springt.
- *
- * @returns {void}
- */
+   * Checks if the character is jumping on an enemy.
+   * @returns {void}
+   */
   checkJumpOnEnemy() {
     this.level.enemies.forEach((enemy) => {
       if (enemy.isDead || enemy.hitByBottle) return;
@@ -227,10 +225,9 @@ checkBottleEnemyCollision() {
   }
   
   /**
- * Prüft, ob es zu einer normalen (frontalen) Kollision zwischen dem Charakter und einem Gegner kommt.
- *
- * @returns {void}
- */
+   * Checks if there is a normal (frontal) collision between the character and an enemy.
+   * @returns {void}
+   */
   checkColliding() {
     this.level.enemies.forEach((enemy) => { if (enemy.isDead || enemy.hitByBottle) return;
       if (this.character.isColliding(enemy)) { const isJumpCollision = this.character.speedY < -5 &&
@@ -302,7 +299,7 @@ checkBottleEnemyCollision() {
   }
 
   /**
-   * Erhöht die Anzahl gesammelter Münzen und aktualisiert die Münzleiste.
+   * Increases the number of collected coins and updates the coin bar.
    */
   collectCoin() {
     this.coins += 1;
@@ -311,7 +308,7 @@ checkBottleEnemyCollision() {
   }
 
   /**
-   * Erhöht die Anzahl gesammelter Flaschen und aktualisiert die Flaschenleiste.
+   * Increases the number of collected bottles and updates the bottle bar.
    */
   collectBottle() {
     this.bottles += 1;
@@ -320,7 +317,7 @@ checkBottleEnemyCollision() {
   }
 
   /**
-   * Prüft, ob der Spieler eine Flasche werfen kann und fügt eine geworfene Flasche hinzu.
+   * Checks if the player can throw a bottle and adds a thrown bottle.
    */
   throwBottle() {
     if (this.keyboard && this.keyboard.D && this.character.bottles > 0) {
@@ -328,9 +325,8 @@ checkBottleEnemyCollision() {
     }
   }
   
-
   /**
-   * Erstellt in regelmäßigen Abständen neue Flaschen an zufälligen Positionen im Level.
+   * Creates new bottles at random positions in the level at regular intervals.
    */
   spawnBottle() {
     intervalIds.push(setInterval(() => {
@@ -342,8 +338,8 @@ checkBottleEnemyCollision() {
   }
 
   /**
-   * Überprüft, ob alle Gegner besiegt wurden. Falls ja, stoppt das Spiel
-   * und zeigt den Gewinnbildschirm an.
+   * Checks if all enemies have been defeated.
+   * If so, stops the game and displays the winning screen.
    */
   checkWinCondition() {
     const remainingEnemies = this.level.enemies.filter((enemy) => !enemy.isDead);
@@ -358,8 +354,8 @@ checkBottleEnemyCollision() {
   }
 
   /**
-   * Überprüft, ob der Spieler kein Leben mehr hat. Falls ja, wird das Spiel
-   * gestoppt und der Game-Over-Bildschirm angezeigt.
+   * Checks if the player has no more life.
+   * If so, stops the game and displays the game over screen.
    */
   checkGameOver() {
     if (this.character.energy <= 0 && !this.gameOverDisplayed) { this.gameOverDisplayed = true;

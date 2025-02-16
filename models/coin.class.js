@@ -1,6 +1,6 @@
 /**
- * Die `Coin`-Klasse repräsentiert eine sammelbare Münze im Spiel.
- * Sie kollidiert mit dem Charakter, wenn dieser sie berührt.
+ * Represents a collectible coin in the game.
+ * It collides with the character when touched.
  *
  * @extends DrawableObject
  */
@@ -12,16 +12,16 @@ class Coin extends DrawableObject {
   isCollected = false;
 
   /**
-   * Enthält die Animationsbilder der Münze.
+   * Contains the animation images for the coin.
    * @type {string[]}
    */
   IMAGES_COIN = ["img/8_coin/coin_1.png", "img/8_coin/coin_2.png"];
 
   /**
-   * Erstellt eine neue Instanz einer Münze.
-   * Lädt das Bild und setzt die Position der Münze.
+   * Creates a new instance of a coin.
+   * Loads the image and sets the coin's position.
    *
-   * @param {number} x - Die X-Position der Münze.
+   * @param {number} x - The x-coordinate of the coin.
    */
   constructor(x) {
     super().loadImage("img/8_coin/coin_1.png");
@@ -31,12 +31,12 @@ class Coin extends DrawableObject {
   }
 
   /**
-   * Hitbox-Offsets zur genauen Kollisionsberechnung.
+   * Hitbox offsets for precise collision detection.
    * @type {Object}
-   * @property {number} top - Obere Offset-Anpassung
-   * @property {number} left - Linke Offset-Anpassung
-   * @property {number} right - Rechte Offset-Anpassung
-   * @property {number} bottom - Untere Offset-Anpassung
+   * @property {number} top - Top offset adjustment
+   * @property {number} left - Left offset adjustment
+   * @property {number} right - Right offset adjustment
+   * @property {number} bottom - Bottom offset adjustment
    */
   offset = {
     top: 0,
@@ -46,10 +46,10 @@ class Coin extends DrawableObject {
   };
 
   /**
-   * Überprüft, ob die Münze mit einem anderen Objekt kollidiert.
+   * Checks if the coin collides with another object.
    *
-   * @param {MovableObject} mo - Das Objekt, mit dem die Kollision überprüft wird.
-   * @returns {boolean} `true`, wenn eine Kollision erkannt wurde, sonst `false`.
+   * @param {MovableObject} mo - The object to check collision with.
+   * @returns {boolean} `true` if a collision is detected, otherwise `false`.
    */
   isColliding(mo) {
     if (!mo || mo.isDead) return false;

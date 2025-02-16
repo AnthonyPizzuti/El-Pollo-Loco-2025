@@ -1,6 +1,6 @@
 /**
- * Repräsentiert ein bewegliches Objekt im Spiel.
- * Erbt von `DrawableObject` und implementiert Funktionen zur Bewegung und Kollisionserkennung.
+ * Represents a movable object in the game.
+ * Inherits from `DrawableObject` and implements functions for movement and collision detection.
  */
 class MovableObject extends DrawableObject {
   speed = 0.2;
@@ -11,8 +11,8 @@ class MovableObject extends DrawableObject {
   lastHit = 0;
 
   /**
-   * Wendet die Schwerkraft auf das Objekt an.
-   * Falls das Objekt sich über dem Boden befindet, wird die y-Position angepasst.
+   * Applies gravity to the object.
+   * If the object is above the ground, its y-position is adjusted.
    */
   applyGravity() {
     intervalIds.push(
@@ -30,8 +30,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Überprüft, ob sich das Objekt über dem Boden befindet.
-   * @returns {boolean} `true`, wenn das Objekt über dem Boden ist, sonst `false`.
+   * Checks whether the object is above the ground.
+   * @returns {boolean} `true` if the object is above the ground, otherwise `false`.
    */
   isAboveGround() {
     if (this instanceof ThrowableObject) {
@@ -42,7 +42,7 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Hitbox-Offsets für genauere Kollisionserkennung.
+   * Hitbox offsets for more precise collision detection.
    * @type {{top: number, left: number, right: number, bottom: number}}
    */
   offset = {
@@ -53,9 +53,9 @@ class MovableObject extends DrawableObject {
   };
 
   /**
-   * Überprüft, ob das Objekt mit einem anderen `MovableObject` kollidiert.
-   * @param {MovableObject} mo - Das zu überprüfende Objekt.
-   * @returns {boolean} `true`, wenn eine Kollision stattfindet, sonst `false`.
+   * Checks whether the object collides with another `MovableObject`.
+   * @param {MovableObject} mo - The object to check collision with.
+   * @returns {boolean} `true` if a collision occurs, otherwise `false`.
    */
   isColliding(mo) {
     if (!mo || mo.isDead) return false;
@@ -68,8 +68,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Reduziert die Energie des Objekts bei einem Treffer.
-   * Falls die Energie unter 0 fällt, wird `gameOver()` aufgerufen.
+   * Reduces the object's energy when hit.
+   * If the energy falls below 0, `gameOver()` is called.
    */
   hit() {
     if (this.isHurt()) return; 
@@ -83,8 +83,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Überprüft, ob das Objekt kürzlich getroffen wurde.
-   * @returns {boolean} `true`, wenn das Objekt innerhalb einer Sekunde nach dem Treffer unverwundbar ist.
+   * Checks if the object was hit recently.
+   * @returns {boolean} `true` if the object is invulnerable within one second after being hit.
    */
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
@@ -93,16 +93,16 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Überprüft, ob das Objekt gestorben ist (Energie == 0).
-   * @returns {boolean} `true`, wenn das Objekt tot ist, sonst `false`.
+   * Checks if the object is dead (energy == 0).
+   * @returns {boolean} `true` if the object is dead, otherwise `false`.
    */
   isDead() {
     return this.energy == 0;
   }
 
   /**
-   * Spielt eine Animation, indem die Bildquelle des Objekts geändert wird.
-   * @param {string[]} images - Ein Array mit den Bildpfaden für die Animation.
+   * Plays an animation by changing the object's image source.
+   * @param {string[]} images - An array of image paths for the animation.
    */
   playAnimation(images) {
     let i = this.currentImage % images.length;
@@ -111,30 +111,30 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
-  /**
-   * Bewegt das Objekt nach rechts.
+/**
+   * Moves the object to the right.
    */
   moveRight() {
     this.x += this.speed;
   }
 
-  /**
-   * Bewegt das Objekt nach links.
+/**
+   * Moves the object to the left.
    */
   moveLeft() {
     this.x -= this.speed;
   }
 
-  /**
-   * Lässt das Objekt springen, indem die vertikale Geschwindigkeit gesetzt wird.
+   /**
+   * Makes the object jump by setting its vertical speed.
    */
   jump() {
     this.speedY = 30;
   }
 
-  /**
-   * Setzt die Welt des Objekts, falls noch nicht gesetzt.
-   * @param {World} world - Die Welt, in der sich das Objekt befindet.
+ /**
+   * Sets the world of the object if not already set.
+   * @param {World} world - The world in which the object resides.
    */
   setWorld(world) {
     if (!this.world) {

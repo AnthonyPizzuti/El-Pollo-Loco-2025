@@ -1,6 +1,6 @@
 /**
- * Repräsentiert den spielbaren Charakter (Pepe) im Spiel.
- * Erbt von `MovableObject` und enthält Bewegung, Animationen und Interaktionen.
+ * Represents the playable character (Pepe) in the game.
+ * Inherits from `MovableObject` and includes movement, animations, and interactions.
  */
 class Character extends MovableObject {
   height = 280;
@@ -15,7 +15,7 @@ class Character extends MovableObject {
   sleepTimer = null;
   isJumping = false;
 
-  /** @type {Object} Offset für die Hitbox */
+  /** @type {Object} Offset for the hitbox */
   offset = {
     top: 120,
     bottom: 30,
@@ -23,7 +23,7 @@ class Character extends MovableObject {
     right: 30,
   };
 
-  /** @type {string[]} Idle-Animation */
+   /** @type {string[]} Idle Animation */
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
     "img/2_character_pepe/1_idle/idle/I-2.png",
@@ -37,7 +37,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/idle/I-10.png",
   ];
 
-  /** @type {string[]} Lange Idle-Animation */
+    /** @type {string[]} Long Idle Animation */
   IMAGES_LONG_IDLE = [
     "img/2_character_pepe/1_idle/long_idle/I-11.png",
     "img/2_character_pepe/1_idle/long_idle/I-12.png",
@@ -51,7 +51,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/long_idle/I-20.png",
   ];
 
-  /** @type {string[]} Geh-Animation */
+   /** @type {string[]} Walking Animation */
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
     "img/2_character_pepe/2_walk/W-22.png",
@@ -61,7 +61,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-26.png",
   ];
 
-  /** @type {string[]} Sprung-Animation */
+  /** @type {string[]} Jumping Animation */
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
     "img/2_character_pepe/3_jump/J-32.png",
@@ -74,7 +74,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-39.png",
   ];
 
-  /** @type {string[]} Sterbe-Animation */
+  /** @type {string[]} Death Animation */
   IMAGES_DEAD = [
     "img/2_character_pepe/5_dead/D-51.png",
     "img/2_character_pepe/5_dead/D-52.png",
@@ -85,7 +85,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-57.png",
   ];
 
-  /** @type {string[]} Schaden-Animation */
+  /** @type {string[]} Hurt Animation */
   IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
@@ -100,8 +100,8 @@ class Character extends MovableObject {
   hurt_sound = new Audio("audio/hurt.mp3");
   sleep_sound = new Audio("audio/sleep.mp3");
 
-  /**
-   * Erstellt den Charakter, lädt alle Bilder und Sounds und startet die Animation.
+/**
+   * Creates the character, loads all images and sounds, and starts the animation.
    */
   constructor() {
     super().loadImage("img/2_character_pepe/1_idle/idle/I-1.png");
@@ -126,8 +126,8 @@ class Character extends MovableObject {
 
   }
 
-  /**
-   * Animiert den Charakter.
+ /**
+   * Animates the character.
    */
   animate() {
     intervalIds.push(setInterval(() => this.moveCharacter(), 1000 / 60));
@@ -135,8 +135,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * 
-   * Animiert die Sprung Animation.
+   * Animates the jump animation.
    */
   startJumpAnimation() {
     if (this.jumpingAnimationActive) return;
@@ -154,7 +153,7 @@ class Character extends MovableObject {
   }
   
   /**
-   * Bewegt den Charakter basierend auf der Tasteneingabe.
+   * Moves the character based on keyboard input.
    */
   moveCharacter() {
     this.walking_sound.pause();
@@ -170,42 +169,43 @@ class Character extends MovableObject {
   }
 
   /**
-   * Überprüft, ob der Charakter nach rechts gehen kann.
-   * @returns {boolean} `true`, wenn die Bewegung erlaubt ist.
+   * Checks if the character can move to the right.
+   * @returns {boolean} `true` if moving right is allowed.
    */
   canMoveRight() {
     return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
   }
 
   /**
-   * Überprüft, ob der Charakter sich nach links bewegen kann.
-   * Der Charakter kann sich nur nach links bewegen, wenn die `LEFT`-Taste gedrückt wird
-   * und er sich nicht bereits am linken Rand des Spielfeldes (`x > 0`) befindet.
+   * Checks if the character can move to the left.
+   * The character can only move left if the LEFT key is pressed
+   * and he is not already at the left edge of the playing field (`x > 0`).
    *
-   * @returns {boolean} `true`, wenn die Bewegung nach links möglich ist, sonst `false`.
+   * @returns {boolean} `true` if moving left is allowed, otherwise `false`.
    */
   canMoveLeft() {
     return this.world.keyboard.LEFT && this.x > 0;
   }
 
   /**
-   * Überprüft, ob der Charakter springen kann.
-   * Der Charakter kann nur springen, wenn die `SPACE`-Taste gedrückt wird
-   * und er sich nicht bereits in der Luft (`!this.isAboveGround()`) befindet.
+   * Checks if the character can jump.
+   * The character can only jump if the SPACE key is pressed
+   * and he is not already in the air (`!this.isAboveGround()`).
    *
-   * @returns {boolean} `true`, wenn der Charakter springen kann, sonst `false`.
+   * @returns {boolean} `true` if the character can jump, otherwise `false`.
    */
   canJump() {
     return this.world.keyboard.SPACE && !this.isAboveGround();
   }
 
   /**
-   * Steuert die Animationen des Charakters basierend auf seinem aktuellen Zustand.
+   * Controls the character's animations based on its current state.
    *
-   * - Falls der Charakter tot ist, wird die Sterbeanimation abgespielt und der `dead_sound` abgespielt.
-   * - Falls der Charakter verletzt ist, wird die Verletzungsanimation abgespielt und der `hurt_sound` abgespielt.
-   * - Falls der Charakter in der Luft ist, wird die Sprunganimation abgespielt.
-   * - Falls der Charakter sich nach links oder rechts bewegt, wird die Geh-Animation abgespielt.
+   * - If the character is dead, plays the death animation and the `dead_sound`.
+   * - If the character is hurt, plays the hurt animation and the `hurt_sound`.
+   * - If the character is in the air, plays the jump animation.
+   * - If the character is moving left or right, plays the walking animation.
+   * - Otherwise, plays the idle animation.
    */
   playCharacter() {
     if (this.isDead()) {
@@ -222,8 +222,8 @@ class Character extends MovableObject {
     }
   }
 
-  /**
-   * Überprüft, ob der Charakter für eine gewisse Zeit inaktiv war und wechselt dann in den Schlafmodus.
+ /**
+   * Checks if the character has been inactive for a certain time and then enters sleep mode.
    */
   checkSleeping() {
     const now = new Date().getTime();
@@ -239,8 +239,8 @@ class Character extends MovableObject {
     }
   }
 
-  /**
-   * Aktualisiert die letzte Bewegung des Charakters und beendet den Schlafmodus, falls aktiv.
+/**
+   * Updates the character's last movement time and ends sleep mode if active.
    */
   updateLastMovement() {
     this.lastMovementTime = new Date().getTime();
@@ -251,7 +251,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * Stoppt die Schlafanimation des Charakters.
+   * Stops the character's sleep animation.
    */
   stopSleeping() {
     this.isSleepingActive = false;
@@ -259,8 +259,8 @@ class Character extends MovableObject {
     this.sleep_sound.pause();
   }
 
-  /**
-   * Startet die Schlafanimation des Charakters.
+ /**
+   * Starts the character's sleep animation.
    */
   isSleeping() {
     this.isSleepingActive = true;
@@ -268,8 +268,8 @@ class Character extends MovableObject {
     this.sleep_sound.play();
   }
 
-  /**
-   * Erhöht die Anzahl gesammelter Flaschen und aktualisiert die Flaschenleiste.
+   /**
+   * Increases the number of collected bottles and updates the bottle bar.
    */
   collectBottle() {
     this.bottles += 1;
@@ -277,9 +277,8 @@ class Character extends MovableObject {
     this.world.bottleBar.setPercentage(percentage);
   }
 
-  /**
-   * 
-   * Prüft ob der Character während des schlafens gehitet wird.
+ /**
+   * Checks if the character is hit while sleeping.
    */
   hit() {
     if (this.isHurt()) return;
@@ -291,11 +290,9 @@ class Character extends MovableObject {
     this.playAnimation(this.IMAGES_HURT);
     this.hurt_sound.play();
   }
-  
 
-  /**
-   * Lässt den Charakter eine Flasche werfen, wenn er eine besitzt.
-   * Die Flasche wird in die Richtung geworfen, in die der Charakter schaut.
+/**
+   * Throws a bottle in the direction the character is facing if he has one.
    */
   throwBottle() {
     if (this.bottles > 0 && this.canThrow) { this.canThrow = false;
@@ -303,10 +300,10 @@ class Character extends MovableObject {
       const percentage = Math.max((this.bottles / this.totalBottles) * 100, 0);
       this.world.bottleBar.setPercentage(percentage);
       let bottleX = this.x + (this.otherDirection ? -20 : 100);
-      let bottleY = this.y + 100;
+      let bottleY = this.y + 70;
       let bottle = new ThrowableObject(bottleX, bottleY);
       bottle.otherDirection = this.otherDirection;
-      bottle.speedX = this.otherDirection ? -5 : 5;
+      bottle.speedX = this.otherDirection ? -1 : 1;
       bottle.applyGravity();
       this.world.throwableObjects.push(bottle);
       setTimeout(() => { this.canThrow = true;
@@ -315,7 +312,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * Erhöht die Anzahl gesammelter Münzen und aktualisiert die Münzleiste.
+   * Increases the number of collected coins and updates the coin bar.
    */
   collectCoin() {
     this.coins += 1;

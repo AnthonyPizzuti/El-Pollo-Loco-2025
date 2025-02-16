@@ -1,11 +1,11 @@
 /**
- * Repräsentiert die Lebensanzeige des Endbosses.
- * Erbt von `DrawableObject` und aktualisiert sich je nach Trefferanzahl.
+ * Represents the boss's health bar.
+ * Inherits from `DrawableObject` and updates based on the number of hits.
  */
 class BossBar extends DrawableObject {
 
-      /**
-   * Enthält die Bildpfade für die verschiedenen Stufen der Lebensanzeige des Bosses.
+  /**
+   * Contains the image paths for the different levels of the boss's health bar.
    * @type {string[]}
    */
     IMAGES_BOSS = [
@@ -17,8 +17,8 @@ class BossBar extends DrawableObject {
       "img/7_statusbars/2_statusbar_endboss/green/green100.png"
     ];
   
-    /**
-   * Erstellt eine neue Boss-Lebensanzeige und setzt die Startwerte.
+   /**
+   * Creates a new boss health bar and sets the initial values.
    */
     constructor() {
       super();
@@ -31,18 +31,18 @@ class BossBar extends DrawableObject {
       this.updateImage();
     }
   
-    /**
-     * Setzt die Lebensanzeige des Bosses.
-     * @param {number} hits - Anzahl der Treffer, die der Boss erhalten hat.
-     */
+ /**
+   * Sets the boss's health bar based on the number of hits received.
+   * @param {number} hits - The number of hits the boss has taken.
+   */
     setPercentage(hits) {
       this.percentage = Math.max(0, 100 - hits * 20);
       this.updateImage();
     }
   
-    /**
-     * Wählt das richtige Bild basierend auf der Lebensanzeige.
-     */
+  /**
+   * Chooses the appropriate image based on the current health percentage.
+   */
     updateImage() {
       let index = Math.round(this.percentage / 20);
       index = Math.max(0, Math.min(index, this.IMAGES_BOSS.length - 1));

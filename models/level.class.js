@@ -1,5 +1,5 @@
 /**
- * Repräsentiert ein Level im Spiel mit Gegnern, Wolken, Hintergründen, Flaschen und Münzen.
+ * Represents a level in the game with enemies, clouds, background objects, bottles, and coins.
  */
 class Level {
   enemies;
@@ -10,12 +10,12 @@ class Level {
   coins;
 
   /**
-   * Erstellt ein neues Level.
-   * @param {Array} enemies - Die Gegner im Level.
-   * @param {Array} clouds - Die Wolken im Level.
-   * @param {Array} backgroundObject - Die Hintergrundobjekte im Level.
-   * @param {Array} bottles - Die Flaschen im Level.
-   * @param {Array} coins - Die Münzen im Level.
+   * Creates a new level.
+   * @param {Array} enemies - The enemies in the level.
+   * @param {Array} clouds - The clouds in the level.
+   * @param {Array} backgroundObject - The background objects in the level.
+   * @param {Array} bottles - The bottles in the level.
+   * @param {Array} coins - The coins in the level.
    */
   constructor(enemies, clouds, backgroundObject, bottles, coins) {
     this.enemies = enemies;

@@ -1,17 +1,17 @@
 /**
- * Repräsentiert ein Hintergrundobjekt im Spiel.
- * Erbt von `MovableObject` und wird zur Darstellung des Hintergrunds verwendet.
+ * Represents a background object in the game.
+ * Inherits from `MovableObject` and is used for rendering the background.
  */
 class BackgroundObject extends MovableObject {
   width = 720;
   height = 480;
 
-  /**
-   * Erstellt ein neues Hintergrundobjekt mit einem Bild und einer X-Position.
-   *
-   * @param {string} imagePath - Der Pfad zum Bild des Hintergrundobjekts.
-   * @param {number} x - Die X-Koordinate des Hintergrundobjekts auf der Karte.
-   */
+/**
+ * Creates a new background object with an image and an x-coordinate.
+ *
+ * @param {string} imagePath - The path to the background object's image.
+ * @param {number} x - The x-coordinate of the background object on the map.
+ */
   constructor(imagePath, x) {
     super().loadImage(imagePath);
     this.x = x;

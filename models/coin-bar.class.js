@@ -1,12 +1,12 @@
 /**
- * Die `CoinBar`-Klasse repräsentiert die Statusleiste für gesammelte Münzen.
- * Sie zeigt den Fortschritt basierend auf dem aktuellen Münzbestand.
+ * The `CoinBar` class represents the status bar for collected coins.
+ * It displays the progress based on the current coin count.
  *
  * @extends DrawableObject
  */
 class CoinBar extends DrawableObject {
-  /**
-   * Enthält die verschiedenen Statusbilder für die Coin-Bar basierend auf dem Fortschritt.
+ /**
+   * Contains the various status images for the coin bar based on progress.
    * @type {string[]}
    */
   IMAGES_COIN = [
@@ -19,14 +19,14 @@ class CoinBar extends DrawableObject {
   ];
 
   /**
-   * Der aktuelle Fortschritt der Münzleiste in Prozent.
+   * The current progress of the coin bar in percentage.
    * @type {number}
    */
   percentage = 0;
 
   /**
-   * Erstellt eine neue Instanz der `CoinBar`-Klasse.
-   * Lädt die Bilder für die Coin-Bar und setzt die Startposition sowie die Größe der Anzeige.
+   * Creates a new instance of the `CoinBar` class.
+   * Loads the images for the coin bar and sets the initial position and size of the display.
    */
   constructor() {
     super();
@@ -39,9 +39,9 @@ class CoinBar extends DrawableObject {
   }
 
   /**
-   * Aktualisiert die Statusleiste basierend auf dem aktuellen Münz-Fortschritt.
+   * Updates the status bar based on the current coin progress.
    *
-   * @param {number} percentage - Der neue Fortschrittswert (zwischen 0 und 100).
+   * @param {number} percentage - The new progress value (between 0 and 100).
    */
   setPercentage(percentage) {
     this.percentage = percentage;

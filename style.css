@@ -367,7 +367,6 @@ canvas {
   background-color: #ffa400;
   cursor: pointer;
   font-family: "zabars", Arial, Helvetica, sans-serif;
-  font-size: 24px;
   border-radius: 8px;
   transition: transform 0.2s ease;
 }
@@ -408,7 +407,6 @@ canvas {
   top: 10px;
   right: 10px;
   background: #aeca54;
-  color: #000;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
@@ -418,11 +416,32 @@ canvas {
 }
 
 .close-btn:hover {
-  background: #0056b3;
+    background-color: #faf1e081;
 }
 
 .modal.hidden {
   display: none;
+}
+
+#read-me-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  font-size: 24px;
+}
+
+#close-readme {
+  background-color: #ffa400;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#close-readme:hover {
+  background-color: #faf1e081;
 }
 
 @media only screen and (max-width: 1024px) {

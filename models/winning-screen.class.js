@@ -1,12 +1,13 @@
 /**
- * Repräsentiert den Gewinn-Bildschirm, der erscheint, wenn der Spieler das Spiel gewinnt.
- * Diese Klasse erstellt das Gewinn-Overlay, spielt den Gewinn-Sound ab
- * und ermöglicht das Neustarten des Spiels.
+ * Represents the winning screen that appears when the player wins the game.
+ * This class creates the win overlay, plays the winning sound,
+ * and allows the game to be restarted.
  */
 class WinningScreen {
+
   /**
-   * Erstellt eine neue Instanz des Gewinn-Bildschirms.
-   * @param {string} buttonId - Die ID des Neustart-Buttons.
+   * Creates a new instance of the winning screen.
+   * @param {string} buttonId - The ID of the restart button.
    */
   constructor(buttonId) {
     this.restartButton = document.getElementById(buttonId);
@@ -25,11 +26,12 @@ class WinningScreen {
     if (this.winImage.complete) {
       this.drawBackground();
       this.playWinMusic();
+      registerSound(this.playWinMusic);
     }
   }
 
   /**
-   * Erstellt das Overlay für den Gewinn-Bildschirm und zeigt das Gewinnbild an.
+   * Creates the overlay for the winning screen and displays the win image.
    */
   drawBackground() {
     let winningScreenDiv = document.createElement("div");
@@ -39,16 +41,22 @@ class WinningScreen {
     winImageElement.src = this.winImage.src;
     let restartButton = document.createElement("button");
     restartButton.innerText = "Neustart";
-    restartButton.addEventListener("click", () => { winningScreenDiv.remove(); restartGame(); });
+    restartButton.addEventListener("click", () => {
+      winningScreenDiv.remove();
+      restartGame();
+    });
     winningScreenDiv.appendChild(winImageElement);
     winningScreenDiv.appendChild(restartButton);
     let container = document.getElementById("game-container");
-    if (container) { container.appendChild(winningScreenDiv); } else { document.body.appendChild(winningScreenDiv); }
+    if (container) {
+      container.appendChild(winningScreenDiv);
+    } else {
+      document.body.appendChild(winningScreenDiv);
+    }
   }
-  
 
   /**
-   * Spielt die Gewinn-Musik ab, wenn das Spiel gewonnen wurde.
+   * Plays the winning music when the game is won.
    */
   playWinMusic() {
     this.winSound.play().catch(() => {});

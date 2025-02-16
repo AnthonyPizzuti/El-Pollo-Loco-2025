@@ -1,7 +1,12 @@
+/**
+ * Represents the rendering engine for the game.
+ * Responsible for drawing the entire game, including all objects and UI elements.
+ */
 class Rendering {
+
   /**
-   * Erstellt eine Rendering-Instanz für das Spiel.
-   * @param {World} world - Die aktuelle Spielwelt.
+   * Creates a Rendering instance for the game.
+   * @param {World} world - The current game world.
    */
   constructor(world) {
     this.world = world;
@@ -9,8 +14,8 @@ class Rendering {
     this.draw();
   }
 
-  /**
-   * Zeichnet das gesamte Spiel, einschließlich aller Objekte und Statusleisten.
+   /**
+   * Draws the entire game, including all objects and status bars.
    */
   draw() {
     if (this.world.stopped) return;
@@ -38,34 +43,32 @@ class Rendering {
   }
 
   /**
-   * Fügt mehrere Objekte zur Karte hinzu.
-   * @param {Array} objects - Array von Objekten, die gezeichnet werden sollen.
+   * Adds multiple objects to the map.
+   * @param {Array} objects - An array of objects to be drawn.
    */
   addObjectsToMap(objects) {
     objects.forEach((o) => this.addToMap(o));
   }
 
-  /**
-   * Zeichnet ein einzelnes Objekt auf die Karte.
-   * @param {MovableObject} mo - Das zu zeichnende Objekt.
+ /**
+   * Draws a single object on the map.
+   * @param {MovableObject} mo - The object to be drawn.
    */
   addToMap(mo) {
     if (!mo) return;
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-
     mo.draw(this.ctx);
     mo.drawFrame(this.ctx);
-
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
   }
 
   /**
-   * Spiegelt das Bild für Links-Rechts-Bewegung.
-   * @param {MovableObject} mo - Das zu spiegelnde Objekt.
+   * Flips the image horizontally for left-right movement.
+   * @param {MovableObject} mo - The object whose image is to be flipped.
    */
   flipImage(mo) {
     this.ctx.save();
@@ -75,8 +78,8 @@ class Rendering {
   }
 
   /**
-   * Stellt das gespiegelte Bild wieder richtig dar.
-   * @param {MovableObject} mo - Das wiederherzustellende Objekt.
+   * Restores the flipped image to its original orientation.
+   * @param {MovableObject} mo - The object whose image is to be restored.
    */
   flipImageBack(mo) {
     mo.x *= -1;

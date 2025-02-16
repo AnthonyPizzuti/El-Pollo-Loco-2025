@@ -1,6 +1,6 @@
 /**
- * Repräsentiert die Steuerung des Spiels über die Tastatur.
- * Diese Klasse speichert den Zustand der relevanten Tasten als `true` oder `false`.
+ * Represents the game controls via the keyboard.
+ * This class stores the state of the relevant keys as `true` or `false`.
  */
 class Keyboard {
   LEFT = false;

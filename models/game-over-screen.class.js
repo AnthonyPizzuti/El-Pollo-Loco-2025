@@ -1,11 +1,11 @@
 /**
- * Repräsentiert den Game-Over-Bildschirm des Spiels.
- * Diese Klasse erzeugt ein Game-Over-Overlay und spielt die entsprechende Musik ab.
+ * Represents the Game Over screen of the game.
+ * This class creates a Game Over overlay and plays the corresponding music.
  */
 class GameOverScreen {
   /**
-   * Erstellt eine neue Instanz des Game-Over-Screens.
-   * @param {string} buttonId - Die ID des Neustart-Buttons.
+   * Creates a new instance of the Game Over screen.
+   * @param {string} buttonId - The ID of the restart button.
    */
   constructor(buttonId) {
     this.restartButton = document.getElementById(buttonId);
@@ -29,7 +29,7 @@ class GameOverScreen {
   }
 
   /**
-   * Erstellt den Game-Over-Hintergrund und fügt ihn zum Dokument hinzu.
+   * Creates the Game Over background and appends it to the document.
    */
   drawBackground() {
     let gameOverScreenDiv = document.createElement("div");
@@ -48,7 +48,7 @@ class GameOverScreen {
   
 
   /**
-   * Spielt die Game-Over-Musik ab, falls das Spiel nicht gemutet ist.
+   * Plays the Game Over music if the game is not muted.
    */
   playGameOverMusic() {
     if (!isMuted) {

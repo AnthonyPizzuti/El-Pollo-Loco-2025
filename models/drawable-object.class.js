@@ -1,6 +1,6 @@
 /**
- * Die `DrawableObject`-Klasse ist die Basisklasse für alle Objekte,
- * die auf dem Canvas gezeichnet werden können.
+ * The `DrawableObject` class is the base class for all objects
+ * that can be drawn on the canvas.
  */
 class DrawableObject {
   img;
@@ -12,9 +12,9 @@ class DrawableObject {
   width = 100;
 
   /**
-   * Lädt ein einzelnes Bild für das Objekt.
+   * Loads a single image for the object.
    *
-   * @param {string} path - Der Pfad zum Bild.
+   * @param {string} path - The path to the image.
    */
   // loadImage('img/test.png);
   loadImage(path) {
@@ -23,25 +23,25 @@ class DrawableObject {
   }
 
   /**
-   * Zeichnet das aktuelle Bild des Objekts auf das übergebene Canvas-Rendering-Context.
+   * Draws the object's current image on the provided canvas rendering context.
    *
-   * @param {CanvasRenderingContext2D} ctx - Der Rendering-Kontext des Canvas.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
    */
   draw(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
   /**
-   * Zeichnet einen Rahmen um das Objekt (aktuell nicht implementiert).
+   * Draws a frame around the object (currently not implemented).
    *
-   * @param {CanvasRenderingContext2D} ctx - Der Rendering-Kontext des Canvas.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
    */
   drawFrame(ctx) {}
 
   /**
-   * Lädt mehrere Bilder in den `imageCache`, um sie später in Animationen zu verwenden.
+   * Loads multiple images into the `imageCache` for later use in animations.
    *
-   * @param {string[]} arr - Ein Array von Bildpfaden.
+   * @param {string[]} arr - An array of image paths.
    */
   loadImages(arr) {
     arr.forEach((path) => {

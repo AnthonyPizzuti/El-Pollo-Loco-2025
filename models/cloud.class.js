@@ -1,6 +1,6 @@
 /**
- * Klasse `Cloud` repräsentiert eine Wolke im Spielhintergrund.
- * Die Wolken bewegen sich kontinuierlich nach links, um eine Parallax-Scrolling-Illusion zu erzeugen.
+ * The `Cloud` class represents a cloud in the game background.
+ * Clouds continuously move to the left to create a parallax scrolling effect.
  *
  * @extends MovableObject
  */
@@ -11,8 +11,8 @@ class Cloud extends MovableObject {
   speed = 0.2;
 
   /**
-   * Erstellt eine neue Instanz einer Wolke.
-   * Lädt das Bild für die Wolke und setzt eine zufällige X-Position.
+   * Creates a new instance of a cloud.
+   * Loads the cloud image and sets a random x-coordinate.
    */
   constructor() {
     super().loadImage("img/5_background/layers/4_clouds/1.png");
@@ -21,8 +21,8 @@ class Cloud extends MovableObject {
   }
 
   /**
-   * Startet die Animation der Wolke.
-   * Die Wolke bewegt sich kontinuierlich nach links.
+   * Starts the cloud's animation.
+   * The cloud continuously moves to the left.
    */
   animate() {
     intervalIds.push(

@@ -1,6 +1,6 @@
 /**
- * @file game.js - Hauptsteuerung für das Spiel, initialisiert das Spielfeld,
- * verwaltet die Steuerung, den Spielstatus, den Sound und die Fullscreen-Optionen.
+ * @file game.js - Main controller for the game, initializes the playing field,
+ * manages controls, game state, sound, and fullscreen options.
  */
 let canvas;
 let ctx;
@@ -24,7 +24,7 @@ let gameControlsTemplate = null;
 
 
 /**
- * Zeigt den Startbildschirm an und startet das Spiel bei Klick auf "Play".
+ * Displays the start screen and sets up the Play button.
  */
 function showStartScreen() {
     new StartScreen("canvas", "img/9_intro_outro_screens/start/startscreen_2.png", "playButton");
@@ -39,11 +39,12 @@ function showStartScreen() {
       }
       let gameControls = document.getElementById('game-controls'); if (gameControls) { gameControls.classList.add("hidden"); gameControls.style.display = "none";
       }
+      showReadMeOverlay();
     }
 
-  /**
-   * Startet das Game.
-   */
+/**
+ * Starts the game.
+ */
   function startGame() {
     gameStarted = true;
     let playButton = document.getElementById("playButton");
@@ -59,7 +60,7 @@ function showStartScreen() {
   }
 
 /**
- * Initialisiert das Spiel, erstellt das Spielfeld und setzt Event-Listener für Steuerung.
+ * Initializes the game, creates the playing field and sets control event listeners.
  */
 function init() {
   if (!world) {
@@ -70,18 +71,15 @@ function init() {
     addTouchControls();
     addKeydownControls();
     addKeyupControls();
-    if (startMusic) {
-      startMusic.pause();
-      startMusic.currentTime = 0;
+    if (startMusic) { startMusic.pause(); startMusic.currentTime = 0;
     }
-    backgroundMusic.loop = true;
-    backgroundMusic.volume = 0.05;
+    backgroundMusic.loop = true; backgroundMusic.volume = 0.05;
     if (!isMuted) backgroundMusic.play();
   }
 }
 
 /**
- * Richtet alle Touch-Controls für die Buttons ein.
+ * Sets up all touch controls for the buttons.
  */
 function addTouchControls() {
     const leftBtn = document.getElementById("left-btn");
@@ -98,7 +96,9 @@ function addTouchControls() {
     throwBtn?.addEventListener("touchend", () => { keyboard.D = false; });
     }
   
-    /** Adds keydown events for game controls. */
+/** 
+ * Adds keydown events for game controls.
+ */
 function addKeydownControls() {
     document.addEventListener("keydown", e => {
       if (!gameStarted) return;
@@ -112,7 +112,9 @@ function addKeydownControls() {
     });
   }
 
-/** Adds keyup events for game controls. */
+/** 
+ * Adds keyup events for game controls.
+ */
 function addKeyupControls() {
     document.addEventListener("keyup", e => {
       if (e.keyCode == 39) keyboard.RIGHT = false;
@@ -126,9 +128,8 @@ function addKeyupControls() {
     });
   }
   
-
 /**
- * Startet die Hintergrundmusik, wenn das Spiel beginnt.
+ * Starts the background music when the game begins.
  */
 function playBackgroundMusic() {
   if (!isMuted && gameStarted) {
@@ -137,7 +138,7 @@ function playBackgroundMusic() {
 }
 
 /**
- * Stellt sicher, dass die Musik stummgeschaltet wird, wenn das Spiel auf "Mute" ist.
+ * Ensures that the music is muted when the game is set to "Mute".
  */
 function updateBackgroundMusic() {
   backgroundMusic.muted = isMuted;
@@ -147,12 +148,12 @@ function updateBackgroundMusic() {
 }
 
 /**
- * Registriere den Hintergrundsound, damit er von der Mute-Funktion berücksichtigt wird.
+ * Registers the background sound so that it is considered by the mute function.
  */
 registerSound(backgroundMusic, true);
 
 /**
- * Schließt das Impressum und kehrt zum Spiel zurück.
+ * Closes the impressum and returns to the game.
  */
 document.addEventListener("DOMContentLoaded", () => {
     let impressumLink = document.getElementById("impressum-icon");
@@ -162,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Stoppt alle gesetzten Intervalle und beendet das Zeichnen der Welt.
+ * Stops all intervals and terminates the world's rendering.
  */
 function stopAllIntervals() {
   intervalIds.forEach(clearInterval);
@@ -174,7 +175,7 @@ function stopAllIntervals() {
 }
 
 /**
- * Startet alle notwendigen Intervalle neu.
+ * Restarts all necessary intervals.
  */
 function restartIntervals() {
   if (!world) return;
@@ -184,7 +185,7 @@ function restartIntervals() {
 }
 
 /**
- * Zeigt den Gewinnbildschirm an.
+ * Displays the winning screen.
  */
 function showWinningScreen() {
   if (world && world.endboss_sound) {
@@ -196,7 +197,7 @@ function showWinningScreen() {
 }
 
 /**
- * Zeigt den Game-Over-Bildschirm an und stoppt das Zeichnen.
+ * Displays the game-over screen and stops the rendering.
  */
 function gameOver() {
   world.stopDrawing();
@@ -204,7 +205,7 @@ function gameOver() {
 }
 
 /**
- * Zeigt den Game-Over-Bildschirm an.
+ * Displays the game-over screen.
  */
 function showGameOverScreen() {
   stopAllIntervals();
@@ -215,7 +216,7 @@ function showGameOverScreen() {
 }
 
 /**
- * Schaltet zwischen Vollbild- und Fenstermodus.
+ * Toggles between fullscreen and windowed mode.
  */
 function toggleFullscreen() { let container = document.getElementById("game-container");
   if (!document.fullscreenElement) { container.requestFullscreen?.();
@@ -224,10 +225,10 @@ function toggleFullscreen() { let container = document.getElementById("game-cont
 }
 
 /**
- * Aktiviert den Vollbildmodus für das angegebene HTML-Element.
- * Unterstützt verschiedene Browser-spezifische Methoden für Fullscreen.
+ * Enables fullscreen mode for the specified HTML element.
+ * Supports various browser-specific methods for fullscreen.
  *
- * @param {HTMLElement} element - Das HTML-Element, das in den Vollbildmodus gesetzt werden soll.
+ * @param {HTMLElement} element - The HTML element to be set to fullscreen.
  */
 function enterFullscreen(element) { if (element.requestFullscreen) { element.requestFullscreen();
   } else if (element.msRequestFullscreen) { element.msRequestFullscreen();
@@ -236,8 +237,7 @@ function enterFullscreen(element) { if (element.requestFullscreen) { element.req
 }
 
 /**
- * Beendet den Vollbildmodus, falls dieser aktiv ist.
- * Unterstützt verschiedene Browser-spezifische Methoden zum Verlassen des Fullscreen-Modus.
+ * Exits fullscreen mode if it is active.
  */
 function exitFullscreen() { if (document.exitFullscreen) { document.exitFullscreen();
   } else if (document.webkitExitFullscreen) { document.webkitExitFullscreen();
@@ -245,8 +245,7 @@ function exitFullscreen() { if (document.exitFullscreen) { document.exitFullscre
 }
 
 /**
- * Wartet darauf, dass das DOM vollständig geladen ist,
- * und fügt dann einen Event-Listener zum Fullscreen-Button hinzu.
+ * Waits until the DOM is fully loaded, then adds an event listener to the fullscreen button.
  */
 document.addEventListener("DOMContentLoaded", () => {
   let fullscreenBtn = document.getElementById("fullscreen-btn");
@@ -255,14 +254,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Schaltet zwischen Stummschaltung und Ton an/aus.
+ * Toggles between muting and unmuting sound.
  */
 function toggleMute() {
   isMuted = !isMuted;
   document.getElementById("mute-btn").querySelector("img").src = isMuted ? "./img/controll/mute.png" : "./img/controll/ton.png";
   muteAllSounds();
-  if (!gameStarted && startMusic) { startMusic.muted = isMuted; if (!isMuted && startMusic.paused)
-      (startMusic.volume = 0.5), startMusic.play();
+  if (!gameStarted && startMusic) { startMusic.muted = isMuted; if (!isMuted && startMusic.paused) (startMusic.volume = 0.5), startMusic.play();
   } else { startMusic?.pause(), (startMusic.currentTime = 0); if (backgroundMusic) { backgroundMusic.muted = isMuted;
       if (!isMuted && backgroundMusic.paused)
          (backgroundMusic.volume = 0.05), backgroundMusic.play();
@@ -271,35 +269,35 @@ function toggleMute() {
 }
 
 /**
- * Stellt sicher, dass alle Sounds auf die Mute-Einstellung angepasst sind.
+ * Ensures that all sounds are adjusted according to the mute setting.
  */
 function muteAllSounds() { allGameSounds.forEach((sound) => { if (sound) { if (isMuted) { sound.muted = true; sound.pause();
       } else { sound.muted = false; if (sound.loop && !sound.isStartSound) { sound.play().catch(() => {});
-        }
-      }
-    }
+        }}}
   });
 }
 
+/**
+ * Stop all Sounds.
+ */
 function stopAllSounds() { allGameSounds.forEach(sound => { if (sound) { sound.pause(); sound.currentTime = 0;
       }
     });
   }
 
 /**
- * Registriert einen Sound und fügt ihn zur globalen Sound-Liste hinzu,
- * falls er nicht bereits enthalten ist. Zusätzlich wird der Mute-Status übernommen.
+ * Registers a sound and adds it to the global sound list if not already present.
+ * Additionally, the mute status is applied.
  *
- * @param {HTMLAudioElement} sound - Das Sound-Objekt, das registriert werden soll.
- * @param {boolean} [isStartSound=false] - Gibt an, ob der Sound ein Start-Sound ist.
+ * @param {HTMLAudioElement} sound - The sound object to be registered.
+ * @param {boolean} [isStartSound=false] - Indicates if the sound is a start sound.
  */
 function registerSound(sound, isStartSound = false) { if (sound && !allGameSounds.includes(sound)) { sound.isStartSound = isStartSound; sound.muted = isMuted; allGameSounds.push(sound);
   }
 }
 
 /**
- * Wartet darauf, dass das DOM vollständig geladen ist,
- * und fügt dann einen Event-Listener zum Mute-Button hinzu.
+ * Waits until the DOM is fully loaded, then adds an event listener to the mute button.
  */
 document.addEventListener("DOMContentLoaded", () => {
   let muteBtn = document.getElementById("mute-btn");
@@ -308,10 +306,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Startet oder beendet das Spiel pausieren.
+ * Starts or stops pausing the game.
  */
-function togglePause() {
-  gamePaused = !gamePaused;
+function togglePause() { gamePaused = !gamePaused;
   let pauseScreen = document.getElementById("pause-screen");
   let muteBtn = document.getElementById("mute-btn");
   if (gamePaused) { previousMuteState = isMuted; isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden"); world.stopAllMovement(); muteBtn.style.pointerEvents = "none"; muteBtn.style.opacity = "0.5";
@@ -320,22 +317,18 @@ function togglePause() {
 }
 
 /**
- * Setzt das Spiel nach einer Pause fort, indem es den Pausenbildschirm ausblendet,
- * den Mute-Status wiederherstellt und die Spielbewegungen fortsetzt.
+ * Resumes the game after a pause by hiding the pause screen,
+ * restoring the mute status, and resuming game movements.
  */
-function resumeGame() {
-  gamePaused = false;
+function resumeGame() { gamePaused = false;
   document.getElementById("pause-screen").classList.add("hidden");
-  isMuted = previousMuteState;
-  muteAllSounds();
-  world.resumeAllMovement();
-  updateBackgroundMusic();
+  isMuted = previousMuteState; muteAllSounds(); world.resumeAllMovement(); updateBackgroundMusic();
   let muteBtn = document.getElementById("mute-btn");
   muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
 }
 
 /**
- * Startet das Spiel neu.
+ * Restarts the game.
  */
 function restartGame() {
     stopAllIntervals(); stopAllSounds(); if (world) world.stopDrawing();
@@ -343,20 +336,16 @@ function restartGame() {
     document.getElementById('pause-screen')?.classList.add('hidden');
     document.getElementById('canvas')?.remove();
     const container = document.getElementById('game-container');
-    if (container) {
-      const newCanvas = document.createElement('canvas'); newCanvas.id = 'canvas'; newCanvas.width = 720; newCanvas.height = 480;
-      container.appendChild(newCanvas);
-      if (!document.getElementById('game-controls') && gameControlsTemplate) { container.appendChild(gameControlsTemplate.cloneNode(true)); addTouchControls(); addKeydownControls(); addKeyupControls(); }
-    }
-    allGameSounds = allGameSounds.filter(sound => !(sound.src && sound.src.includes("endboss.mp3")));
-    showStartScreen(); isMuted = previousMuteState; muteAllSounds(); let muteBtn = document.getElementById("mute-btn"); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
+    if (container) { const newCanvas = document.createElement('canvas'); newCanvas.id = 'canvas'; newCanvas.width = 720; newCanvas.height = 480; container.appendChild(newCanvas);
+    if (!document.getElementById('game-controls') && gameControlsTemplate) { container.appendChild(gameControlsTemplate.cloneNode(true)); addTouchControls(); addKeydownControls(); addKeyupControls(); }
+    } allGameSounds = allGameSounds.filter(sound => !(sound.src && sound.src.includes("endboss.mp3")));
+    startGame(); isMuted = previousMuteState; muteAllSounds(); if (!isMuted) { backgroundMusic.play(); }
+    let muteBtn = document.getElementById("mute-btn"); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
   }
   
-  
 /**
- * Wartet darauf, dass das DOM vollständig geladen ist,
- * und fügt Event-Listener zu den Steuerungs-Buttons (Resume, Restart, Pause) hinzu.
- * Außerdem überprüft es die Bildschirmorientierung und reagiert auf Änderungen.
+ * Waits until the DOM is fully loaded, then adds event listeners to the control buttons (Resume, Restart, Pause)
+ * and checks for orientation changes.
  */
 document.addEventListener("DOMContentLoaded", () => {
     const instructionsBtn = document.getElementById("instructions-btn"), instructionsModal = document.getElementById("instructions-modal"), closeModalBtn = document.getElementById("close-modal");
@@ -370,37 +359,45 @@ document.addEventListener("DOMContentLoaded", () => {
     if(closeImpressumBtn) closeImpressumBtn.addEventListener("click", closeImpressum);
     const gc = document.getElementById("game-controls");
     if(gc) { gameControlsTemplate = gc.cloneNode(true); }
-    checkOrientation();
-    window.addEventListener("resize", checkOrientation); window.addEventListener("orientationchange", checkOrientation);
+    checkOrientation(); window.addEventListener("resize", checkOrientation); window.addEventListener("orientationchange", checkOrientation);
   });
   
-
 /**
- * Überprüft, ob das aktuelle Gerät ein mobiles Gerät ist.
- *
- * @returns {boolean} `true`, wenn das Gerät ein mobiles Gerät ist, sonst `false`.
+ * Checks if the current device is a mobile device.
+ * @returns {boolean} `true` if the device is mobile, otherwise `false`.
  */
 function isMobile() { return (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.userAgent.includes("Macintosh") && navigator.maxTouchPoints && navigator.maxTouchPoints > 1));
 }
 
 /**
- * Überprüft die Geräteausrichtung und pausiert das Spiel ggf.
+ * Checks the device orientation and pauses the game if necessary.
  */
 function checkOrientation() {
     const overlay = document.getElementById("orientation-overlay");
     const pauseScreen = document.getElementById("pause-screen");
-    if (!overlay || !pauseScreen) return;
-    if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.classList.remove("hidden");
-        if (gameStarted && !gamePaused) { gamePaused = true; localStorage.setItem("previousMuteState", isMuted); isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
-        }
-      } else { overlay.classList.add("hidden");
-        if (gamePaused && gameStarted) { gamePaused = false; isMuted = localStorage.getItem("previousMuteState") === "true"; muteAllSounds(); pauseScreen.classList.add("hidden");
-        }
-      }
-    } else { overlay.classList.add("hidden");
+    if (!overlay || !pauseScreen) return; if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.classList.remove("hidden"); if (gameStarted && !gamePaused) { gamePaused = true; localStorage.setItem("previousMuteState", isMuted); isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
+        }} else { overlay.classList.add("hidden"); if (gamePaused && gameStarted) { gamePaused = false; isMuted = localStorage.getItem("previousMuteState") === "true"; muteAllSounds(); pauseScreen.classList.add("hidden");
+        }}} else { overlay.classList.add("hidden");
     }
   }
   
+  /**
+ * Displays the "Read Me First" overlay on the start screen.
+ * Disables the Play button until the user closes the overlay.
+ *
+ * The overlay element (with id "read-me-overlay") is shown,
+ * the Play button is disabled and given a "disabled" class.
+ * When the close button (with id "close-readme") is clicked,
+ * the overlay is hidden and the Play button is re-enabled.
+ */
+  function showReadMeOverlay() {
+    const overlay = document.getElementById("read-me-overlay");
+    const closeBtn = document.getElementById("close-readme");
+    const playButton = document.getElementById("playButton");
+    if (!overlay || !closeBtn || !playButton) return; overlay.classList.remove("hidden"); playButton.disabled = true; playButton.classList.add("disabled"); closeBtn.addEventListener("click", () => {
+      overlay.classList.add("hidden"); playButton.disabled = false; playButton.classList.remove("disabled");
+    });
+  }
   
   
   
