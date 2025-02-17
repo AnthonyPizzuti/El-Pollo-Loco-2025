@@ -32,20 +32,19 @@ class GameOverScreen {
    * Creates the Game Over background and appends it to the document.
    */
   drawBackground() {
-    let gameOverScreenDiv = document.createElement("div");
-    gameOverScreenDiv.id = "game-over-screen";
-    gameOverScreenDiv.classList.add("overlay");
-    let gameOverImageElement = document.createElement("img");
-    gameOverImageElement.src = this.gameOverImage.src;
-    let restartButton = document.createElement("button");
-    restartButton.innerText = "Neustart";
-    restartButton.addEventListener("click", () => { gameOverScreenDiv.remove(); restartGame(); });
-    gameOverScreenDiv.appendChild(gameOverImageElement);
-    gameOverScreenDiv.appendChild(restartButton);
+    let gameOverScreenDiv = document.createElement("div"); gameOverScreenDiv.id = "game-over-screen"; gameOverScreenDiv.classList.add("overlay");
+    let gameOverImageElement = document.createElement("img"); gameOverImageElement.src = this.gameOverImage.src;
+    let restartButton = document.createElement("button"); restartButton.innerText = "Neustart"; restartButton.addEventListener("click", () => { gameOverScreenDiv.remove(); restartGame(); 
+    });
+    let homeButton = document.createElement("button"); homeButton.innerText = "Home Screen"; homeButton.addEventListener("click", () => { gameOverScreenDiv.remove(); goToHomeScreen(); 
+    });
+    let buttonsContainer = document.createElement("div"); buttonsContainer.classList.add("buttons-container"); buttonsContainer.appendChild(restartButton); buttonsContainer.appendChild(homeButton);
+    gameOverScreenDiv.appendChild(gameOverImageElement); gameOverScreenDiv.appendChild(buttonsContainer);
     let container = document.getElementById("game-container");
-    if (container) { container.appendChild(gameOverScreenDiv); } else { document.body.appendChild(gameOverScreenDiv); }
+    if (container) { container.appendChild(gameOverScreenDiv);
+    } else { document.body.appendChild(gameOverScreenDiv);
+    }
   }
-  
 
   /**
    * Plays the Game Over music if the game is not muted.

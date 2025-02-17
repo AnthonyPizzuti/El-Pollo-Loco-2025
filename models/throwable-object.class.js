@@ -77,7 +77,7 @@ class ThrowableObject extends MovableObject {
    */
   trow() {
     this.playThrowSound();
-    this.speedY = 18;
+    this.speedY = 25;
     this.applyGravity();
     let flightInterval = setInterval(() => {
       if (!this.hasHitGround) {
@@ -127,7 +127,9 @@ class ThrowableObject extends MovableObject {
     }, 100);
     setTimeout(() => {
       clearInterval(splashInterval);
-      this.removeBottle();
+      if (this.level && this.level.throwableObjects) { this.level.throwableObjects = this.level.throwableObjects.filter(bottle => bottle !== this);
+      } else if (typeof world !== 'undefined' && world.throwableObjects) { world.throwableObjects = world.throwableObjects.filter(bottle => bottle !== this);
+      }
     }, 600);
   }
 

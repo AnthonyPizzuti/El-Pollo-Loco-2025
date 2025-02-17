@@ -127,7 +127,7 @@ function addKeyupControls() {
       }
     });
   }
-  
+
 /**
  * Starts the background music when the game begins.
  */
@@ -146,11 +146,6 @@ function updateBackgroundMusic() {
   } else { backgroundMusic.pause();
   }
 }
-
-/**
- * Registers the background sound so that it is considered by the mute function.
- */
-registerSound(backgroundMusic, true);
 
 /**
  * Closes the impressum and returns to the game.
@@ -266,6 +261,7 @@ function toggleMute() {
          (backgroundMusic.volume = 0.05), backgroundMusic.play();
     }
   }
+  registerSound(backgroundMusic, true);
 }
 
 /**
@@ -320,11 +316,8 @@ function togglePause() { gamePaused = !gamePaused;
  * Resumes the game after a pause by hiding the pause screen,
  * restoring the mute status, and resuming game movements.
  */
-function resumeGame() { gamePaused = false;
-  document.getElementById("pause-screen").classList.add("hidden");
-  isMuted = previousMuteState; muteAllSounds(); world.resumeAllMovement(); updateBackgroundMusic();
-  let muteBtn = document.getElementById("mute-btn");
-  muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
+function resumeGame() { gamePaused = false; document.getElementById("pause-screen").classList.add("hidden"); isMuted = previousMuteState; muteAllSounds(); world.resumeAllMovement(); updateBackgroundMusic();
+  let muteBtn = document.getElementById("mute-btn"); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
 }
 
 /**
@@ -339,8 +332,22 @@ function restartGame() {
     if (container) { const newCanvas = document.createElement('canvas'); newCanvas.id = 'canvas'; newCanvas.width = 720; newCanvas.height = 480; container.appendChild(newCanvas);
     if (!document.getElementById('game-controls') && gameControlsTemplate) { container.appendChild(gameControlsTemplate.cloneNode(true)); addTouchControls(); addKeydownControls(); addKeyupControls(); }
     } allGameSounds = allGameSounds.filter(sound => !(sound.src && sound.src.includes("endboss.mp3")));
-    startGame(); isMuted = previousMuteState; muteAllSounds(); if (!isMuted) { backgroundMusic.play(); }
-    let muteBtn = document.getElementById("mute-btn"); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
+    startGame(); isMuted = previousMuteState; muteAllSounds(); if (!isMuted) { backgroundMusic.play(); } let muteBtn = document.getElementById("mute-btn"); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
+  }
+
+  /**
+ * Resets the game state and shows the start screen.
+ */
+  function goToHomeScreen() {
+    stopAllIntervals(); stopAllSounds(); if (world) world.stopDrawing();
+    world = null; gameStarted = winScreenDisplayed = gameOverDisplayed = gamePaused = false;
+    document.getElementById('pause-screen')?.classList.add('hidden');
+    document.getElementById('canvas')?.remove();
+    const container = document.getElementById('game-container');
+    if (container) { const newCanvas = document.createElement('canvas'); newCanvas.id = 'canvas'; newCanvas.width = 720; newCanvas.height = 480; container.appendChild(newCanvas);
+    if (!document.getElementById('game-controls') && gameControlsTemplate) { container.appendChild(gameControlsTemplate.cloneNode(true)); addTouchControls(); addKeydownControls(); addKeyupControls(); }
+    } allGameSounds = allGameSounds.filter(sound => !(sound.src && sound.src.includes("endboss.mp3")));
+    showStartScreen(); isMuted = previousMuteState; muteAllSounds(); let muteBtn = document.getElementById("mute-btn"); muteBtn.style.pointerEvents = "auto"; muteBtn.style.opacity = "1";
   }
   
 /**
@@ -349,16 +356,12 @@ function restartGame() {
  */
 document.addEventListener("DOMContentLoaded", () => {
     const instructionsBtn = document.getElementById("instructions-btn"), instructionsModal = document.getElementById("instructions-modal"), closeModalBtn = document.getElementById("close-modal");
-    if(instructionsBtn && instructionsModal) instructionsBtn.addEventListener("click", () => { instructionsModal.classList.remove("hidden"); });
-    if(closeModalBtn && instructionsModal) closeModalBtn.addEventListener("click", () => { instructionsModal.classList.add("hidden"); });
-    let resumeBtn = document.getElementById("resume-btn"), restartBtn = document.getElementById("restart-btn"), pauseBtn = document.getElementById("pause-btn");
-    if(resumeBtn) resumeBtn.addEventListener("click", resumeGame);
-    if(restartBtn) restartBtn.addEventListener("click", restartGame);
-    if(pauseBtn) pauseBtn.addEventListener("click", togglePause);
-    let closeImpressumBtn = document.getElementById("close-impressum-btn");
-    if(closeImpressumBtn) closeImpressumBtn.addEventListener("click", closeImpressum);
-    const gc = document.getElementById("game-controls");
-    if(gc) { gameControlsTemplate = gc.cloneNode(true); }
+    if (instructionsBtn && instructionsModal) instructionsBtn.addEventListener("click", () => instructionsModal.classList.remove("hidden"));
+    if (closeModalBtn && instructionsModal) closeModalBtn.addEventListener("click", () => instructionsModal.classList.add("hidden"));
+    let resumeBtn = document.getElementById("resume-btn"), restartBtn = document.getElementById("restart-btn"), pauseBtn = document.getElementById("pause-btn"), homeBtn = document.getElementById("home-btn");
+    if (resumeBtn) resumeBtn.addEventListener("click", resumeGame); if (restartBtn) restartBtn.addEventListener("click", restartGame); if (pauseBtn) pauseBtn.addEventListener("click", togglePause); if (homeBtn) homeBtn.addEventListener("click", goToHomeScreen);
+    let closeImpressumBtn = document.getElementById("close-impressum-btn"); if (closeImpressumBtn) closeImpressumBtn.addEventListener("click", closeImpressum);
+    const gc = document.getElementById("game-controls"); if (gc) gameControlsTemplate = gc.cloneNode(true);
     checkOrientation(); window.addEventListener("resize", checkOrientation); window.addEventListener("orientationchange", checkOrientation);
   });
   
@@ -378,13 +381,11 @@ function checkOrientation() {
     if (!overlay || !pauseScreen) return; if (isMobile()) { if (window.innerHeight > window.innerWidth) { overlay.classList.remove("hidden"); if (gameStarted && !gamePaused) { gamePaused = true; localStorage.setItem("previousMuteState", isMuted); isMuted = true; muteAllSounds(); pauseScreen.classList.remove("hidden");
         }} else { overlay.classList.add("hidden"); if (gamePaused && gameStarted) { gamePaused = false; isMuted = localStorage.getItem("previousMuteState") === "true"; muteAllSounds(); pauseScreen.classList.add("hidden");
         }}} else { overlay.classList.add("hidden");
-    }
-  }
+    }}
   
   /**
  * Displays the "Read Me First" overlay on the start screen.
  * Disables the Play button until the user closes the overlay.
- *
  * The overlay element (with id "read-me-overlay") is shown,
  * the Play button is disabled and given a "disabled" class.
  * When the close button (with id "close-readme") is clicked,
@@ -394,8 +395,7 @@ function checkOrientation() {
     const overlay = document.getElementById("read-me-overlay");
     const closeBtn = document.getElementById("close-readme");
     const playButton = document.getElementById("playButton");
-    if (!overlay || !closeBtn || !playButton) return; overlay.classList.remove("hidden"); playButton.disabled = true; playButton.classList.add("disabled"); closeBtn.addEventListener("click", () => {
-      overlay.classList.add("hidden"); playButton.disabled = false; playButton.classList.remove("disabled");
+    if (!overlay || !closeBtn || !playButton) return; overlay.classList.remove("hidden"); playButton.disabled = true; playButton.classList.add("disabled"); closeBtn.addEventListener("click", () => { overlay.classList.add("hidden"); playButton.disabled = false; playButton.classList.remove("disabled");
     });
   }
   

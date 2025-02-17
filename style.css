@@ -118,6 +118,12 @@ canvas {
   max-height: 88vh;
 }
 
+#winning-screen .buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
 #winning-screen button {
   padding: 10px 20px;
   font-size: 18px;
@@ -149,6 +155,12 @@ canvas {
 #game-over-screen img {
   max-width: 90vw;
   max-height: 90vh;
+}
+
+#game-over-screen .buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 #game-over-screen button {
@@ -243,6 +255,14 @@ canvas {
 }
 
 #restart-btn:hover {
+  background-color: #c82333;
+}
+
+#home-btn {
+  background-color: #dc3545;
+}
+
+#home-btn:hover {
   background-color: #c82333;
 }
 
@@ -416,7 +436,7 @@ canvas {
 }
 
 .close-btn:hover {
-    background-color: #faf1e081;
+  background-color: #faf1e081;
 }
 
 .modal.hidden {
