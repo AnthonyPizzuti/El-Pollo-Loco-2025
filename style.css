@@ -220,7 +220,7 @@ canvas {
   transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.8);
   color: white;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   border-radius: 10px;
   display: flex;

@@ -199,6 +199,7 @@ checkBottleEnemyCollision() {
           }
           bottle.hasHitGround = true;
           this.throwableObjects.splice(bottleIndex, 1);
+          setTimeout(() => { enemy.hitByBottle = false; }, 500);
           return;
         }
       }

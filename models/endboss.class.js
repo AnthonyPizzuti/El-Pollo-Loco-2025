@@ -9,7 +9,6 @@ class Endboss extends MovableObject {
   y = 45;
   isDead = false;
 
-
  /**
    * Offset for the final boss's hitbox.
    * @type {{top: number, bottom: number, left: number, right: number}}
@@ -111,18 +110,20 @@ class Endboss extends MovableObject {
  /**
    * Starts the final boss's animations for movement, state, and attack.
    */
-  animate() {
-    let walkInterval = setInterval(() => { this.playAnimation(this.IMAGES_WALK); this.moveLeft();
-    }, 200);
-    let stateChangeInterval = setInterval(() => { if (this.isDead) { this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.hits >= 3 && this.hits < 7) { this.playAnimation(this.IMAGES_HURT);
-      } else { this.playAnimation(this.IMAGES_WALKING);
-      }
-    }, 200);
-    let attackInterval = setInterval(() => { if (!this.isDead) { this.playAnimation(this.IMAGES_ATTACK);
-      }
-    }, 5000);
-    intervalIds.push(walkInterval, stateChangeInterval, attackInterval);
+ animate() {
+    this.inHurtOverride = false;
+    let movementInterval = setInterval(() => { if (this.isDead) return; this.moveLeft(); if (!this.inHurtOverride) { this.playAnimation(this.IMAGES_WALK);
+    }}, 200);
+    let attackInterval = setInterval(() => { if (this.isDead || this.inHurtOverride) return; this.playAnimation(this.IMAGES_ATTACK);
+    }, 3000);
+    let hurtOverrideInterval = setInterval(() => {
+      if (this.isDead || this.hits < 3) return; this.inHurtOverride = true;
+      let hurtInterval = setInterval(() => { this.playAnimation(this.IMAGES_HURT);
+      }, 200);
+      setTimeout(() => { clearInterval(hurtInterval); this.inHurtOverride = false;
+      }, 1000);
+    }, 3000);
+    intervalIds.push(movementInterval, attackInterval, hurtOverrideInterval);
   }
 
   /**
