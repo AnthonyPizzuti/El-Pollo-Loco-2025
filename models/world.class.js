@@ -289,15 +289,18 @@ checkBottleEnemyCollision() {
   handleEndbossCollision(enemy) {
     enemy.hits = (enemy.hits || 0) + 1;
     this.bossBar?.setPercentage(enemy.hits);
-    this.endboss_attack_sound.volume = 0.6;
+    this.endboss_attack_sound.volume = 0.8;
     this.endboss_attack_sound.play();
-    if (enemy.hits === 3) { enemy.playAnimation(enemy.IMAGES_HURT);
-    }
-    if (enemy.hits >= 5) { enemy.die();
-      setTimeout(() => { this.checkWinCondition();
-      }, 3000);
-    }
-  }
+    if (enemy.hits < 5) {
+        enemy.playAnimation(enemy.IMAGES_HURT);
+        setTimeout(() => { enemy.playAnimation(enemy.IMAGES_WALK); }, 2000);
+        } else {
+          enemy.die();
+          setTimeout(() => {
+            this.checkWinCondition();
+          }, 3000);
+        }
+      }
 
   /**
    * Increases the number of collected coins and updates the coin bar.

@@ -111,42 +111,56 @@ class Endboss extends MovableObject {
    * Starts the final boss's animations for movement, state, and attack.
    */
  animate() {
-    this.inHurtOverride = false;
-    let movementInterval = setInterval(() => { if (this.isDead) return; this.moveLeft(); if (!this.inHurtOverride) { this.playAnimation(this.IMAGES_WALK);
-    }}, 200);
-    let attackInterval = setInterval(() => { if (this.isDead || this.inHurtOverride) return; this.playAnimation(this.IMAGES_ATTACK);
+    let movementInterval = setInterval(() => {
+      if (this.isDead) return;
+      this.moveLeft();
+      if (!this.inHurt) {
+        this.playAnimation(this.IMAGES_WALK);
+      }
+    }, 200);
+    let attackInterval = setInterval(() => {
+      if (this.isDead || this.inHurt) return;
+      this.playAnimation(this.IMAGES_ATTACK);
     }, 3000);
-    let hurtOverrideInterval = setInterval(() => {
-      if (this.isDead || this.hits < 3) return; this.inHurtOverride = true;
-      let hurtInterval = setInterval(() => { this.playAnimation(this.IMAGES_HURT);
-      }, 200);
-      setTimeout(() => { clearInterval(hurtInterval); this.inHurtOverride = false;
-      }, 1000);
-    }, 3000);
-    intervalIds.push(movementInterval, attackInterval, hurtOverrideInterval);
+    intervalIds.push(movementInterval, attackInterval);
   }
-
+  
   /**
-   * Handles the death of the final boss.
-   * - Prevents multiple executions if already dead.
-   * - Stops all movement and attack intervals.
-   * - Plays the death animation for 2 seconds.
-   * - Removes the boss from the game after the animation.
-   */
+ * Handles the Endboss getting hit.
+ * - Increases the hit counter.
+ * - Triggers the hurt animation.
+ * - Disables the hurt state after 500ms.
+ */
+  hit() {
+    if (this.isDead) return;
+    this.hits++;
+    this.inHurt = true;
+    this.playAnimation(this.IMAGES_HURT);
+    setTimeout(() => {
+      this.inHurt = false;
+    }, 500);
+  }
+  
+  /**
+ * Handles the Endboss's death.
+ * - Stops movement and attack intervals.
+ * - Plays the death animation.
+ * - Removes the Endboss from the world after 2 seconds.
+ */
   die() {
     if (this.isDead) return;
     this.isDead = true;
-    if (this.endboss_sound) { this.endboss_sound.pause(); this.endboss_sound.currentTime = 0;
-      let index = allGameSounds.indexOf(this.endboss_sound);
-      if (index > -1) { allGameSounds.splice(index, 1);
-      }
-    } clearInterval(this.walkInterval); clearInterval(this.stateChangeInterval); clearInterval(this.attackInterval);
-    let deathAnimationInterval = setInterval(() => { this.playAnimation(this.IMAGES_DEAD);
+    clearInterval(this.walkInterval);
+    clearInterval(this.attackInterval);
+    let deathAnimationInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES_DEAD);
     }, 200);
-    setTimeout(() => { clearInterval(deathAnimationInterval); 
+    setTimeout(() => {
+      clearInterval(deathAnimationInterval);
       this.removeFromWorld();
     }, 2000);
   }
+
   
 /**
  * Removes the entity from the world's enemy list.
